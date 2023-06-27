@@ -1,0 +1,47 @@
+header {
+	width: 100%;
+	background: #fff;
+	padding: 20px 10vw;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #ddd;
+
+	h1 {
+		a {
+			font: bold 24px/1 'arial';
+			color: #333;
+		}
+	}
+	#gnb {
+		display: flex;
+		gap: 50px;
+
+		li {
+			a {
+				font: 15px/1 'arial';
+				color: #777;
+
+				&.on {
+					font-weight: bold;
+					color: #000;
+				}
+			}
+		}
+	}
+}
+
+header.main {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: transparent;
+	z-index: 2;
+
+	h1 a {
+		color: #fff;
+	}
+	#gnb li a {
+		color: #fff;
+	}
+}
