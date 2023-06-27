@@ -13,6 +13,7 @@ header {
 			color: #333;
 		}
 	}
+
 	#gnb {
 		display: flex;
 		gap: 50px;
@@ -23,11 +24,17 @@ header {
 				color: #777;
 
 				&.on {
-					font-weight: bold;
 					color: #000;
+					font-weight: bold;
 				}
 			}
 		}
+	}
+
+	.fa-bars {
+		color: #333;
+		font-size: 20px;
+		display: none;
 	}
 }
 
@@ -43,5 +50,19 @@ header.main {
 	}
 	#gnb li a {
 		color: #fff;
+	}
+	.fa-bars {
+		color: #fff;
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	header {
+		#gnb {
+			display: none;
+		}
+		.fa-bars {
+			display: block;
+		}
 	}
 }

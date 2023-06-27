@@ -1,5 +1,7 @@
+import Layout from '../common/Layout';
+
 function Contact() {
-	return <div></div>;
+	return <Layout name={'Contact'}></Layout>;
 }
 
 export default Contact;

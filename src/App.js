@@ -25,6 +25,7 @@ function App() {
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을때 먼저 나오는 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
 				<Route exact path='/'>
+					{/* 메인전용 라우터에는 main문자값을 전달 */}
 					<Header type={'main'} />
 					<Visual />
 					<News />
@@ -34,6 +35,7 @@ function App() {
 				</Route>
 
 				<Route path='/'>
+					{/* 서브전용 라우터에는 sub문자값을 전달 */}
 					<Header type={'sub'} />
 				</Route>
 			</Switch>
@@ -54,11 +56,11 @@ function App() {
 				<Youtube />
 			</Route>
 
-			<Route path='contact'>
+			<Route path='/contact'>
 				<Contact />
 			</Route>
 
-			<Route path='member'>
+			<Route path='/member'>
 				<Member />
 			</Route>
 
