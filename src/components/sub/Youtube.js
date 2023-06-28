@@ -1,8 +1,10 @@
 import Layout from '../common/Layout';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import Modal from '../common/Modal';
 
 function Youtube() {
+	const modal = useRef(null);
 	const [Vids, setVids] = useState([]);
 
 	useEffect(() => {
@@ -17,22 +19,30 @@ function Youtube() {
 		});
 	}, []);
 	return (
-		<Layout name={'Youtube'}>
-			{Vids.map((vid, idx) => {
-				return (
-					<article key={idx}>
-						<img src={vid.snippet.thumbnails.standard.url} alt={vid.snippet.title} />
-						<h2>{vid.snippet.title.length > 50 ? vid.snippet.title.substr(0, 50) + '...' : vid.snippet.title}</h2>
-						<p>
-							{vid.snippet.description.length > 200
-								? vid.snippet.description.substr(0, 200) + '...'
-								: vid.snippet.description}
-						</p>
-						<span>{vid.snippet.publishedAt.split('T')[0].split('-').join('.')}</span>
-					</article>
-				);
-			})}
-		</Layout>
+		<>
+			<Layout name={'Youtube'}>
+				{Vids.map((vid, idx) => {
+					return (
+						<article key={idx}>
+							<h2>{vid.snippet.title.length > 50 ? vid.snippet.title.substr(0, 50) + '...' : vid.snippet.title}</h2>
+							<div className='txt'>
+								<p>
+									{vid.snippet.description.length > 200
+										? vid.snippet.description.substr(0, 200) + '...'
+										: vid.snippet.description}
+								</p>
+								<span>{vid.snippet.publishedAt.split('T')[0].split('-').join('.')}</span>
+							</div>
+							<div className='pic' onClick={() => modal.current.open()}>
+								<img src={vid.snippet.thumbnails.standard.url} alt={vid.snippet.title} />
+							</div>
+						</article>
+					);
+				})}
+			</Layout>
+
+			<Modal ref={modal} />
+		</>
 	);
 }
 
