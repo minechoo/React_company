@@ -1,0 +1,23 @@
+.btnNavi {
+	position: fixed;
+	right: 50px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 3;
+
+	li {
+		width: 10px;
+		height: 10px;
+		background: #fff;
+		border: 1px solid #333;
+		margin: 20px;
+		cursor: pointer;
+		transition: 0.5s;
+
+		&.on {
+			height: 100px;
+			background: #333;
+			border: 1px solid #fff;
+		}
+	}
+}

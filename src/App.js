@@ -4,11 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
 // main
-import Visual from './components/main/Visual';
-import News from './components/main/News';
-import Pics from './components/main/Pics';
-import Vids from './components/main/Vids';
-import Banner from './components/main/Banner';
+import Main from './components/main/Main';
 //sub
 import Community from './components/sub/Community';
 import Contact from './components/sub/Contact';
@@ -22,47 +18,22 @@ import './scss/style.scss';
 function App() {
 	return (
 		<>
-			{/* Switch는 내부에 중복되는 라우트 경로가 있을때 먼저 나오는 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
-				<Route exact path='/'>
-					{/* 메인전용 라우터에는 main문자값을 전달 */}
-					<Header type={'main'} />
-					<Visual />
-					<News />
-					<Pics />
-					<Vids />
-					<Banner />
-				</Route>
-
-				<Route path='/'>
-					{/* 서브전용 라우터에는 sub문자값을 전달 */}
-					<Header type={'sub'} />
-				</Route>
+				<Route exact path='/' component={Main} />
+				<Route path='/' render={() => <Header type={'sub'} />} />
 			</Switch>
 
-			<Route path='/department'>
-				<Department />
-			</Route>
+			<Route path='/department' component={Department} />
 
-			<Route path='/community'>
-				<Community />
-			</Route>
+			<Route path='/community' component={Community} />
 
-			<Route path='/gallery'>
-				<Gallery />
-			</Route>
+			<Route path='/gallery' component={Gallery} />
 
-			<Route path='/youtube'>
-				<Youtube />
-			</Route>
+			<Route path='/youtube' component={Youtube} />
 
-			<Route path='/contact'>
-				<Contact />
-			</Route>
+			<Route path='/contact' component={Contact} />
 
-			<Route path='/member'>
-				<Member />
-			</Route>
+			<Route path='/member' component={Member} />
 
 			<Footer />
 		</>
