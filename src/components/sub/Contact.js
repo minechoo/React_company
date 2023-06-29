@@ -1,7 +1,8 @@
 import Layout from '../common/Layout';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 function Contact() {
+	const [Traffic, setTraffic] = useState(false);
 	//지도가 들어갈 프레임도 가상요소 참조를 위해 useRef로 참조객체생성
 	const container = useRef(null);
 	//일반 HTML버전과는 달리 윈도우객체에서 직접 kakao 상의 객체값을 뽑아옴
@@ -24,11 +25,15 @@ function Contact() {
 		});
 
 		marker.setMap(mapInstance);
-	}, []);
+		Traffic
+			? mapInstance.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC)
+			: mapInstance.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+	}, [Traffic]);
 
 	return (
 		<Layout name={'Contact'}>
 			<div id='map' ref={container}></div>
+			<button onClick={() => setTraffic(!Traffic)}>{Traffic ? 'Traffic on' : 'Traffic off'}</button>
 		</Layout>
 	);
 }
