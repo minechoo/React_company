@@ -6,6 +6,28 @@
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>React App</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7c6d3fe5f65f892ccfdd1307f3bc73d1"></script>
+  <!-- <script type="text/javascript">
+    (function () {
+      emailjs.init('J8tG7AbQZVM2JAujR');
+    })();
+  </script>
+  <script type="text/javascript">
+    window.onload = function () {
+      document.getElementById('contact-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        // generate a five digit number for the contact_number variable
+        this.contact_number.value = Math.random() * 100000 | 0;
+        // service ID , Template ID
+        emailjs.sendForm('service_gvvhk36', 'template_dtqpmbl', this)
+          .then(function () {
+            console.log('SUCCESS!');
+          }, function (error) {
+            console.log('FAILED...', error);
+          });
+      });
+    } -->
+  </script>
 </head>
 
 <body>
