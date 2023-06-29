@@ -12,8 +12,18 @@ function Contact() {
 	};
 
 	useEffect(() => {
+		const imageSrc = `${process.env.PUBLIC_URL}/img/marker1.png`, // 마커이미지의 주소입니다
+			imageSize = new kakao.maps.Size(232, 99), // 마커이미지의 크기입니다
+			imageOption = { offset: new kakao.maps.Point(116, 99) };
+		const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 		//인스턴스 호출구문은 컴포넌트 처음 마운트시 호출
-		new kakao.maps.Map(container.current, option);
+		const mapInstance = new kakao.maps.Map(container.current, option);
+		const marker = new kakao.maps.Marker({
+			position: option.center,
+			image: markerImage,
+		});
+
+		marker.setMap(mapInstance);
 	}, []);
 
 	return (
