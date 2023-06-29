@@ -7,30 +7,45 @@ function Btns() {
 	const [Num, setNum] = useState(0);
 
 	const getPos = () => {
-		console.log(getPos);
 		pos.current = [];
 		const secs = btnRef.current.parentElement.querySelectorAll('.myScroll');
 		for (const sec of secs) pos.current.push(sec.offsetTop);
 		setNum(pos.current.length);
-		console.log(pos.current);
+	};
+
+	const activation = () => {
+		const base = -window.innerHeight / 2;
+		const scroll = window.scrollY;
+		const btns = btnRef.current.children;
+		const boxs = btnRef.current.parentElement.querySelectorAll('.myScroll');
+
+		pos.current.forEach((pos, idx) => {
+			if (scroll >= pos + base) {
+				for (const btn of btns) btn.classList.remove('on');
+				for (const box of boxs) box.classList.remove('on');
+				btns[idx].classList.add('on');
+				boxs[idx].classList.add('on');
+			}
+		});
 	};
 
 	useEffect(() => {
 		getPos();
 		window.addEventListener('resize', getPos);
+		window.addEventListener('scroll', activation);
+
 		return () => {
-			//윈도우 객체에 이벤트 연결하면 다른 서브페이지의 컴포넌트에서도 동일하게 함수호출되므로 에러 발생
-			//해당 컴포넌트가 unmount시 무조건 window전역객체에 연결되어 있는 이벤트 핸들러 함수 제거
-			//이떄 removeEventListener로 핸들러 함수를 제거하기 위해서는 해당 함수로 외부로 함수로 선언되어 있어야가능
 			window.removeEventListener('resize', getPos);
+			window.removeEventListener('scroll', activation);
 		};
 	}, []);
 
 	return (
 		<ul className='btnNavi' ref={btnRef}>
+			{/* 현재 세로 위치값이 담겨있는 배열의 갯수로 빈배열 동적으로 생성하고 버튼 반복처리 */}
 			{Array(Num)
 				.fill()
-				.map((data, idx) => {
+				.map((_, idx) => {
 					let defaultClass = '';
 					if (idx === 0) defaultClass = 'on';
 					return (
