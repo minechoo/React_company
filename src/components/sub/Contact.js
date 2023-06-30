@@ -1,10 +1,16 @@
 import Layout from '../common/Layout';
 import { useRef, useEffect, useState } from 'react';
+import emailjs from '@emailjs/browser';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 function Contact() {
 	const [Traffic, setTraffic] = useState(false);
 	const [Location, setLocation] = useState(null);
 	const [Index, setIndex] = useState(0);
+	const [Success, setSuccess] = useState(false);
+	const inputName = useRef(null);
+	const inputEmail = useRef(null);
+	const inputMessage = useRef(null);
 	//지도가 들어갈 프레임도 가상요소 참조를 위해 useRef로 참조객체생성
 	const container = useRef(null);
 	const arr = useRef(null);
@@ -48,6 +54,27 @@ function Contact() {
 		image: markerImage,
 	});
 
+	//email
+	const form = useRef();
+
+	const sendEmail = (e) => {
+		e.preventDefault();
+
+		emailjs.sendForm('service_gvvhk36', 'template_dtqpmbl', form.current, 'J8tG7AbQZVM2JAujR').then(
+			(result) => {
+				console.log(result.text);
+				setSuccess(true);
+				inputName.current.value = '';
+				inputEmail.current.value = '';
+				inputMessage.current.value = '';
+			},
+			(error) => {
+				console.log(error.text);
+				setSuccess(false);
+			}
+		);
+	};
+	//email
 	useEffect(() => {
 		container.current.innerHTML = '';
 		//인스턴스 호출구문은 컴포넌트 처음 마운트시 호출
@@ -91,6 +118,19 @@ function Contact() {
 					);
 				})}
 			</ul>
+
+			<div className='formBox'>
+				<form ref={form} onSubmit={sendEmail}>
+					<label>Name</label>
+					<input type='text' name='user_name' ref={inputName} />
+					<label>Email</label>
+					<input type='email' name='user_email' ref={inputEmail} />
+					<label>Message</label>
+					<textarea name='message' />
+					<input type='submit' value='Send' ref={inputMessage} />
+				</form>
+				{Success && <p>메일이 성공적으로 발숭되었습니다</p>}
+			</div>
 		</Layout>
 	);
 }
