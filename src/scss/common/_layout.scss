@@ -13,7 +13,9 @@
 		min-height: 600px;
 		opacity: 0;
 		transform: translateY(200px);
-		transition: 1s 0.5s;
+		transition-property: transform, opacity;
+		transition-duration: 1s;
+		transition-delay: 0.5s;
 
 		h1 {
 			width: 100%;
