@@ -53,6 +53,9 @@ function Contact() {
 		const mapInstance = new kakao.maps.Map(container.current, option);
 
 		marker.setMap(mapInstance);
+
+		mapInstance.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
+		mapInstance.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 		//지역변수의 mapInstance값을 다른 함수에서도 활용해야 되므로 Location state에 해당 인스턴스 값 지정
 		setLocation(mapInstance);
 	}, [Index]);
@@ -72,7 +75,7 @@ function Contact() {
 			<ul className='branch'>
 				{info.map((el, idx) => {
 					return (
-						<li key={idx} onClick={() => setIndex(idx)}>
+						<li key={idx} className={idx === Index ? 'on' : ''} onClick={() => setIndex(idx)}>
 							{el.title}
 						</li>
 					);

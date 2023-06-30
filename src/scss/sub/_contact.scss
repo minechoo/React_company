@@ -1,7 +1,19 @@
 .Contact {
-	#map {
-		width: 100%;
-		height: 400px;
-		background: #000;
+	> .inner {
+		#map {
+			width: 100%;
+			height: 400px;
+			background: #333;
+		}
+
+		.branch {
+			li {
+				cursor: pointer;
+
+				&.on {
+					color: hotpink;
+				}
+			}
+		}
 	}
 }
