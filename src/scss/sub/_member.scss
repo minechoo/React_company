@@ -37,7 +37,9 @@
 				padding: 15px 30px;
 
 				input[type='text'],
-				input[type='password'] {
+				input[type='password'],
+				select,
+				textarea {
 					width: 40%;
 					border: 1px solid #aaa;
 					padding: 6px 10px;

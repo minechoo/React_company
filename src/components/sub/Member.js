@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '../common/Layout';
+import { useHistory } from 'react-router-dom';
 
 function Member() {
+	const history = useHistory();
 	const initVal = {
 		userid: '',
 		pwd1: '',
 		pwd2: '',
 		email: '',
 		gender: false,
-		interest: false,
+		interests: false,
+		edu: '',
+		comments: '',
 	};
 
 	const [Val, setVal] = useState(initVal);
@@ -16,10 +20,9 @@ function Member() {
 	const [Submit, setSubmit] = useState(false);
 
 	const handleChange = (e) => {
-		// 현재 입력하고 있는 input요소의 name,value값을 비구조할당으오 뽑아서 출력
+		//현재 입력하고 있는 input요소의 name,value값을 비구조화할당으로 뽑아서 출력
 		const { name, value } = e.target;
-		//console.log(name, value);
-		//기존 초기 Val state 값을 deep copy에서 현재 입력하고 있는 항목의 name 값과 value값으로 기존 state를 덮어쓰기해서 변경(불변성유지)
+		//기존 초기 Val State값을 deep copy해서 현재 입력하고 있는 항목의 name값과 value값으로 기존 State를 덮어쓰기 해서 변경 (불변성 유지)
 		setVal({ ...Val, [name]: value });
 	};
 
@@ -38,68 +41,79 @@ function Member() {
 		setVal({ ...Val, [name]: isChecked });
 	};
 
-	const check = (value) => {
-		//인수로 현재 state 값을 전달 받아서 항목별로 에러메시지를 객체로 반환하는 함수
-		//반환되는 에러메시지가 있으면 인증실패
-		//반환되는 에러메시지가 없으면 인증성공
-		const errs = [];
-		const eng = /[a-zA-Z]/;
-		const num = /[0-9]/;
-		const psc = /[!@#$%^&*()_+]/;
-
-		if (value.userid.length < 5) {
-			errs.userid = '아이디를 5글자 이상 입력하세요';
-		}
-		if (value.pwd1.length < 5 || !eng.test(value.pwd1) || !num.test(value.pwd1) || !psc.test(value.pwd1)) {
-			errs.pwd1 = '비밀번호는 5글자이상, 영문, 숫자, 특수문자를 포함하세요';
-		}
-
-		if (value.pwd1 !== value.pwd2 || !value.pwd2) {
-			errs.pwd2 = '두개의 비밀번호를 동일하게 입력하세요';
-		}
-
-		if (value.email.length < 8 || !/@/.test(value.email)) {
-			errs.email = '8자글자이상 @를 포함하세요';
-		}
-		if (!value.gender) {
-			errs.gender = '성별을 체크해주세요';
-		}
-		if (!value.interest) {
-			errs.interest = '취미를 고르세요';
-		}
-		return errs;
+	const handleSelect = (e) => {
+		const { name, value } = e.target;
+		setVal({ ...Val, [name]: value });
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log('현재스테이트값', Val);
-		//check가 반환되는 인증메시지가 있으면 해당 메시지를 화면에 출력하고 전송중지
-		//그렇지 않으면 인증성공
+		console.log('현재 스테이트값', Val);
+		//check가 반환하는 인증 메세지가 있으면 해당 메세지를 화면에 출력하고 전송중지
+		//그렇지 않으면 인증 성공
 		console.log(check(Val));
 		setErr(check(Val));
 		setSubmit(true);
 	};
 
+	const check = (value) => {
+		//인수로 현재 State값을 전달받아서 항목별로 에러메세지를 객체로 반환하는 함수
+		//반환되는 에러메세지가 있으면 인증 실패
+		//반환되는 에러메세지가 없으면 인증 성공
+		const errs = {};
+		const eng = /[a-zA-Z]/;
+		const num = /[0-9]/;
+		const spc = /[~!@#$%^&*()_+]/;
+
+		if (value.userid.length < 5) {
+			errs.userid = '아이디를 5글자 이상 입력하세요.';
+		}
+		if (value.pwd1.length < 5 || !eng.test(value.pwd1) || !num.test(value.pwd1) || !spc.test(value.pwd1)) {
+			errs.pwd1 = '비밀번호는 5글자 이상, 영문, 숫자, 특수문자를 모두 포함하세요.';
+		}
+		if (value.pwd1 !== value.pwd2 || !value.pwd2) {
+			errs.pwd2 = '두개의 비밀번호를 동일하게 입력하세요.';
+		}
+		if (value.email.length < 8 || !/@/.test(value.email)) {
+			errs.email = '이메일주소는 8글자 이상 @를 포함하세요.';
+		}
+		if (!value.gender) {
+			errs.gender = '성별을 체크해주세요.';
+		}
+		if (!value.interests) {
+			errs.interests = '관심사를 하나 이상 체크하세요.';
+		}
+		if (value.edu === '') {
+			errs.edu = '최종학력을 선택하세요.';
+		}
+		if (value.comments.length < 10) {
+			errs.comments = '남기는 말을 최소 10글자 이상 입력하세요.';
+		}
+		return errs;
+	};
+
 	useEffect(() => {
-		console.log(Val);
-		//객체의 키값을 배열로 반환한다음 해당배열의 객수를 저장
+		//객체의 키값을 배열로 반환한다음 해당 배열의 갯수를 저장
+		//len값이 0이면 Err객체에 에러메시지가 하나도 없어서 인증통과 처리
 		const len = Object.keys(Err).length;
-		console.log(len);
 		if (len === 0 && Submit) {
-			alert('모든 인증을 통과했습니다');
+			alert('모든 인증을 통과했습니다.');
+			history.push('/');
 		}
 	}, [Err]);
 
 	return (
 		<Layout name={'Member'}>
+			<button onClick={() => history.goBack()}>뒤로 가기</button>
 			<form onSubmit={handleSubmit}>
 				<fieldset>
 					<legend className='h'>회원가입 폼 양식</legend>
 					<table>
 						<tbody>
+							{/* user id */}
 							<tr>
 								<th scope='row'>
-									<label htmlFor='userid'>USERID</label>
+									<label htmlFor='userid'>USER ID</label>
 								</th>
 								<td>
 									<input
@@ -107,15 +121,17 @@ function Member() {
 										name='userid'
 										id='userid'
 										placeholder='아이디를 입력하세요'
-										value={Val.userid}
 										onChange={handleChange}
+										value={Val.userid}
 									/>
 									<br />
-									<p>{Err.userid && <p>{Err.userid}</p>}</p>
+									{Err.userid && <p>{Err.userid}</p>}
 								</td>
 							</tr>
+
+							{/* password */}
 							<tr>
-								<th scope='row'>
+								<th>
 									<label htmlFor='pwd1'>PASSWORD</label>
 								</th>
 								<td>
@@ -124,15 +140,17 @@ function Member() {
 										name='pwd1'
 										id='pwd1'
 										placeholder='비밀번호를 입력하세요'
-										value={Val.pwd1}
 										onChange={handleChange}
+										value={Val.pwd1}
 									/>
 									<br />
-									<p>{Err.pwd1 && <p>{Err.pwd1}</p>}</p>
+									{Err.pwd1 && <p>{Err.pwd1}</p>}
 								</td>
 							</tr>
+
+							{/* re password */}
 							<tr>
-								<th scope='row'>
+								<th>
 									<label htmlFor='pwd2'>RE-PASSWORD</label>
 								</th>
 								<td>
@@ -141,15 +159,17 @@ function Member() {
 										name='pwd2'
 										id='pwd2'
 										placeholder='비밀번호를 재입력하세요'
-										value={Val.pwd2}
 										onChange={handleChange}
+										value={Val.pwd2}
 									/>
 									<br />
-									<p>{Err.pwd2 && <p>{Err.pwd2}</p>}</p>
+									{Err.pwd2 && <p>{Err.pwd2}</p>}
 								</td>
 							</tr>
+
+							{/* e-mail */}
 							<tr>
-								<th scope='row'>
+								<th>
 									<label htmlFor='email'>E-MAIL</label>
 								</th>
 								<td>
@@ -158,37 +178,82 @@ function Member() {
 										name='email'
 										id='email'
 										placeholder='이메일주소를 입력하세요'
-										value={Val.email}
 										onChange={handleChange}
+										value={Val.email}
 									/>
 									<br />
-									<p>{Err.email && <p>{Err.email}</p>}</p>
+									{Err.email && <p>{Err.email}</p>}
 								</td>
 							</tr>
+
+							{/* gender */}
 							<tr>
-								<th scope='row'>GENDER</th>
+								<th>GENDER</th>
 								<td>
 									<label htmlFor='male'>Male</label>
-									<input type='radio' name='gender' id='male' value='male' onChange={handleRadio} />
-									<label htmlFor='female'>Female</label>
-									<input type='radio' name='gender' id='female' value='female' onChange={handleRadio} />
+									<input type='radio' name='gender' value='male' id='mail' onChange={handleRadio} />
+
+									<label htmlFor='female'>FeMale</label>
+									<input type='radio' name='gender' value='female' id='female' onChange={handleRadio} />
 									<br />
-									<p>{Err.gender && <p>{Err.gender}</p>}</p>
+									{Err.gender && <p>{Err.gender}</p>}
 								</td>
 							</tr>
+
+							{/* interest */}
 							<tr>
-								<th scope='row'>INTEREST</th>
+								<th>INTERESTS</th>
 								<td>
-									<label htmlFor='music'>music</label>
-									<input type='checkbox' name='interest' id='music' value='music' onChange={handleCheck} />
-									<label htmlFor='dance'>dance</label>
-									<input type='checkbox' name='interest' id='dance' value='dance' onChange={handleCheck} />
-									<label htmlFor='book'>book</label>
-									<input type='checkbox' name='interest' id='book' value='book' onChange={handleCheck} />
+									<label htmlFor='music'>Music</label>
+									<input type='checkbox' name='interests' value='music' id='music' onChange={handleCheck} />
+
+									<label htmlFor='reading'>Reading</label>
+									<input type='checkbox' name='interests' value='reading' id='reading' onChange={handleCheck} />
+
+									<label htmlFor='game'>Game</label>
+									<input type='checkbox' name='interests' value='game' id='game' onChange={handleCheck} />
 									<br />
-									<p>{Err.interest && <p>{Err.interest}</p>}</p>
+									{Err.interests && <p>{Err.interests}</p>}
 								</td>
 							</tr>
+
+							{/* education */}
+							<tr>
+								<th>
+									<label htmlFor='edu'>EDUCATION</label>
+								</th>
+								<td>
+									<select name='edu' id='edu' onChange={handleSelect}>
+										<option value=''>최종학력을 선택하세요</option>
+										<option value='elementary-school'>초등학교 졸업</option>
+										<option value='middle-school'>중학교 졸업</option>
+										<option value='high-school'>고등학교 졸업</option>
+										<option value='college'>대학교 졸업</option>
+									</select>
+									{Err.edu && <p>{Err.edu}</p>}
+								</td>
+							</tr>
+
+							{/* comments */}
+							<tr>
+								<th>
+									<label htmlFor='comments'>Leave Message</label>
+								</th>
+								<td>
+									<textarea
+										name='comments'
+										id='comments'
+										cols='30'
+										rows='3'
+										value={Val.comments}
+										onChange={handleChange}
+									></textarea>
+									<br />
+									{Err.comments && <p>{Err.comments}</p>}
+								</td>
+							</tr>
+
+							{/* btn set */}
 							<tr>
 								<th colSpan='2'>
 									<input type='reset' value='CANCEL' onClick={() => setVal(initVal)} />
