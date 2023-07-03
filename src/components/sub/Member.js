@@ -8,6 +8,7 @@ function Member() {
 		pwd2: '',
 		email: '',
 		gender: false,
+		interest: false,
 	};
 
 	const [Val, setVal] = useState(initVal);
@@ -25,6 +26,16 @@ function Member() {
 	const handleRadio = (e) => {
 		const { name, checked } = e.target;
 		setVal({ ...Val, [name]: checked });
+	};
+
+	const handleCheck = (e) => {
+		const { name } = e.target;
+		let isChecked = false;
+		const inputs = e.target.parentElement.querySelectorAll('input');
+
+		//모든 체크박스를 반복돌면서 하나라도 체크되어 있는게 있으면 true값 반환
+		inputs.forEach((el) => el.checked && (isChecked = true));
+		setVal({ ...Val, [name]: isChecked });
 	};
 
 	const check = (value) => {
@@ -52,6 +63,9 @@ function Member() {
 		}
 		if (!value.gender) {
 			errs.gender = '성별을 체크해주세요';
+		}
+		if (!value.interest) {
+			errs.interest = '취미를 고르세요';
 		}
 		return errs;
 	};
@@ -93,10 +107,11 @@ function Member() {
 										name='userid'
 										id='userid'
 										placeholder='아이디를 입력하세요'
+										value={Val.userid}
 										onChange={handleChange}
 									/>
 									<br />
-									<p>{Err.userid}</p>
+									<p>{Err.userid && <p>{Err.userid}</p>}</p>
 								</td>
 							</tr>
 							<tr>
@@ -109,10 +124,11 @@ function Member() {
 										name='pwd1'
 										id='pwd1'
 										placeholder='비밀번호를 입력하세요'
+										value={Val.pwd1}
 										onChange={handleChange}
 									/>
 									<br />
-									<p>{Err.pwd1}</p>
+									<p>{Err.pwd1 && <p>{Err.pwd1}</p>}</p>
 								</td>
 							</tr>
 							<tr>
@@ -125,10 +141,11 @@ function Member() {
 										name='pwd2'
 										id='pwd2'
 										placeholder='비밀번호를 재입력하세요'
+										value={Val.pwd2}
 										onChange={handleChange}
 									/>
 									<br />
-									<p>{Err.pwd2}</p>
+									<p>{Err.pwd2 && <p>{Err.pwd2}</p>}</p>
 								</td>
 							</tr>
 							<tr>
@@ -141,27 +158,41 @@ function Member() {
 										name='email'
 										id='email'
 										placeholder='이메일주소를 입력하세요'
+										value={Val.email}
 										onChange={handleChange}
 									/>
 									<br />
-									<p>{Err.email}</p>
+									<p>{Err.email && <p>{Err.email}</p>}</p>
 								</td>
 							</tr>
 							<tr>
 								<th scope='row'>GENDER</th>
 								<td>
-									<label htmlFor='female'>Male</label>
-									<input type='radio' name='gender' id='male' onChange={handleRadio} />
+									<label htmlFor='male'>Male</label>
+									<input type='radio' name='gender' id='male' value='male' onChange={handleRadio} />
 									<label htmlFor='female'>Female</label>
-									<input type='radio' name='gender' id='female' onChange={handleRadio} />
+									<input type='radio' name='gender' id='female' value='female' onChange={handleRadio} />
 									<br />
-									<p>{Err.gender}</p>
+									<p>{Err.gender && <p>{Err.gender}</p>}</p>
+								</td>
+							</tr>
+							<tr>
+								<th scope='row'>INTEREST</th>
+								<td>
+									<label htmlFor='music'>music</label>
+									<input type='checkbox' name='interest' id='music' value='music' onChange={handleCheck} />
+									<label htmlFor='dance'>dance</label>
+									<input type='checkbox' name='interest' id='dance' value='dance' onChange={handleCheck} />
+									<label htmlFor='book'>book</label>
+									<input type='checkbox' name='interest' id='book' value='book' onChange={handleCheck} />
+									<br />
+									<p>{Err.interest && <p>{Err.interest}</p>}</p>
 								</td>
 							</tr>
 							<tr>
 								<th colSpan='2'>
-									<input type='reset' value='CANCEL' />
-									<input type='SUBMIT' value='SEND' />
+									<input type='reset' value='CANCEL' onClick={() => setVal(initVal)} />
+									<input type='submit' value='SEND' />
 								</th>
 							</tr>
 						</tbody>
