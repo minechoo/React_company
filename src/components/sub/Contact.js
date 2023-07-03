@@ -1,7 +1,6 @@
 import Layout from '../common/Layout';
 import { useRef, useEffect, useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { faL } from '@fortawesome/free-solid-svg-icons';
 
 function Contact() {
 	const [Traffic, setTraffic] = useState(false);
@@ -13,7 +12,6 @@ function Contact() {
 	const inputMessage = useRef(null);
 	//지도가 들어갈 프레임도 가상요소 참조를 위해 useRef로 참조객체생성
 	const container = useRef(null);
-	const arr = useRef(null);
 	//일반 HTML버전과는 달리 윈도우객체에서 직접 kakao 상의 객체값을 뽑아옴
 	const { kakao } = window;
 	const info = [
@@ -94,6 +92,8 @@ function Contact() {
 		window.addEventListener('resize', setCenter);
 		setLocation(mapInstance);
 
+		mapInstance.setZoomable(false);
+
 		return () => window.removeEventListener('resize', setCenter);
 	}, [Index]);
 
@@ -129,7 +129,7 @@ function Contact() {
 					<textarea name='message' />
 					<input type='submit' value='Send' ref={inputMessage} />
 				</form>
-				{Success && <p>메일이 성공적으로 발숭되었습니다</p>}
+				{Success && <p>메일이 성공적으로 발송되었습니다</p>}
 			</div>
 		</Layout>
 	);
