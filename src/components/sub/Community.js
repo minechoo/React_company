@@ -5,6 +5,7 @@ function Community() {
 	const input = useRef(null);
 	const textarea = useRef(null);
 	const [Posts, setPosts] = useState([]);
+	const [Allowed, setAllowed] = useState(true);
 
 	const resetForm = () => {
 		input.current.value = '';
@@ -26,6 +27,10 @@ function Community() {
 	};
 
 	const enableUpdate = (editIndex) => {
+		//수정모드 진입함수 호출시 Allowd가 true일때에만 로직이 실행되도록 처리
+		if (!Allowed) return;
+		//일직 로직이 실행되면 allowed값을 false로 바꿔서 이후부터는 다시 수정모드로 진입되는 것을 방지
+		setAllowed(false);
 		setPosts(
 			Posts.map((post, postIndex) => {
 				if (editIndex === postIndex) post.enableUpdate = true;
@@ -41,6 +46,8 @@ function Community() {
 				return post;
 			})
 		);
+		//글 수정 취소버튼을 눌러서 disableUpdate함수가 호출이 되야지만 Allowed값을 다시 true로 바꿔서 글 수정 가능하게 처리
+		setAllowed(true);
 	};
 
 	useEffect(() => {
@@ -72,12 +79,12 @@ function Community() {
 										<input type='text' defaultValue={post.title} />
 										<br />
 										<textarea defaultValue={post.content} cols='3' rows='10'></textarea>
-
-										<nav className='btnSet'>
-											<button onClick={() => disenableUpdate(idx)}>CANCEL</button>
-											<button>UPDATE</button>
-										</nav>
 									</div>
+
+									<nav className='btnSet'>
+										<button onClick={() => disenableUpdate(idx)}>CANCEL</button>
+										<button>UPDATE</button>
+									</nav>
 								</>
 							) : (
 								<>
