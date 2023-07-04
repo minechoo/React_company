@@ -16,8 +16,13 @@ function Community() {
 			resetForm();
 			return alert('내용을 입력하세요');
 		}
-		setPosts([...Posts, { title: input.current.value, content: textarea.current.value }]);
+		setPosts([{ title: input.current.value, content: textarea.current.value }, ...Posts]);
 		resetForm();
+	};
+
+	const deletePost = (delIndex) => {
+		if (!window.confirm('해당 게시글을 삭제하시겠습니까?')) return;
+		setPosts(Posts.filter((_, idx) => idx !== delIndex));
 	};
 
 	useEffect(() => {
@@ -31,8 +36,27 @@ function Community() {
 				<br />
 				<textarea cols='30' rows='3' placeholder='본문을 입력하세요' ref={textarea}></textarea>
 				<br />
-				<button onClick={resetForm}>cancel</button>
-				<button onClick={createPost}>write</button>
+				<nav className='btnSet'>
+					<button onClick={resetForm}>cancel</button>
+					<button onClick={createPost}>write</button>
+				</nav>
+			</div>
+			<div className='showBox'>
+				{Posts.map((post, idx) => {
+					return (
+						<article key={idx}>
+							<div className='txt'>
+								<h2>{post.title}</h2>
+								<p>{post.content}</p>
+							</div>
+
+							<nav className='btnSet'>
+								<button>EDIT</button>
+								<button onClick={() => deletePost(idx)}>DELETE</button>
+							</nav>
+						</article>
+					);
+				})}
 			</div>
 		</Layout>
 	);
