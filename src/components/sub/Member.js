@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Layout from '../common/Layout';
 import { useHistory } from 'react-router-dom';
 
 function Member() {
+	const selectEl = useRef(null);
+	const radioGroup = useRef(null);
+	const checkGroup = useRef(null);
 	const history = useHistory();
 	const initVal = {
 		userid: '',
@@ -11,7 +14,7 @@ function Member() {
 		email: '',
 		gender: false,
 		interests: false,
-		edu: '',
+		edu: null,
 		comments: '',
 	};
 
@@ -28,6 +31,7 @@ function Member() {
 
 	const handleRadio = (e) => {
 		const { name, checked } = e.target;
+		console.log(e.target.value);
 		setVal({ ...Val, [name]: checked });
 	};
 
@@ -92,19 +96,31 @@ function Member() {
 		return errs;
 	};
 
+	const resetForm = () => {
+		const select = selectEl.current.options[0];
+		const checks = checkGroup.current.querySelectorAll('input');
+		const radios = radioGroup.current.querySelectorAll('input');
+		select.selected = true;
+		checks.forEach((el) => (el.checked = false));
+		radios.forEach((el) => (el.checked = false));
+		setVal(initVal);
+	};
+
 	useEffect(() => {
 		//객체의 키값을 배열로 반환한다음 해당 배열의 갯수를 저장
 		//len값이 0이면 Err객체에 에러메시지가 하나도 없어서 인증통과 처리
 		const len = Object.keys(Err).length;
 		if (len === 0 && Submit) {
 			alert('모든 인증을 통과했습니다.');
-			history.push('/');
+			//history.push('/');
+			resetForm();
 		}
 	}, [Err]);
 
 	return (
 		<Layout name={'Member'}>
 			<button onClick={() => history.goBack()}>뒤로 가기</button>
+
 			<form onSubmit={handleSubmit}>
 				<fieldset>
 					<legend className='h'>회원가입 폼 양식</legend>
@@ -134,6 +150,7 @@ function Member() {
 								<th>
 									<label htmlFor='pwd1'>PASSWORD</label>
 								</th>
+
 								<td>
 									<input
 										type='password'
@@ -189,7 +206,7 @@ function Member() {
 							{/* gender */}
 							<tr>
 								<th>GENDER</th>
-								<td>
+								<td ref={radioGroup}>
 									<label htmlFor='male'>Male</label>
 									<input type='radio' name='gender' value='male' id='mail' onChange={handleRadio} />
 
@@ -203,7 +220,7 @@ function Member() {
 							{/* interest */}
 							<tr>
 								<th>INTERESTS</th>
-								<td>
+								<td ref={checkGroup}>
 									<label htmlFor='music'>Music</label>
 									<input type='checkbox' name='interests' value='music' id='music' onChange={handleCheck} />
 
@@ -223,7 +240,7 @@ function Member() {
 									<label htmlFor='edu'>EDUCATION</label>
 								</th>
 								<td>
-									<select name='edu' id='edu' onChange={handleSelect}>
+									<select name='edu' id='edu' onChange={handleSelect} ref={selectEl}>
 										<option value=''>최종학력을 선택하세요</option>
 										<option value='elementary-school'>초등학교 졸업</option>
 										<option value='middle-school'>중학교 졸업</option>
