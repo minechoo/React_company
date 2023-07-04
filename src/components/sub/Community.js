@@ -25,6 +25,24 @@ function Community() {
 		setPosts(Posts.filter((_, idx) => idx !== delIndex));
 	};
 
+	const enableUpdate = (editIndex) => {
+		setPosts(
+			Posts.map((post, postIndex) => {
+				if (editIndex === postIndex) post.enableUpdate = true;
+				return post;
+			})
+		);
+	};
+
+	const disenableUpdate = (editIndex) => {
+		setPosts(
+			Posts.map((post, postIndex) => {
+				if (editIndex === postIndex) post.enableUpdate = false;
+				return post;
+			})
+		);
+	};
+
 	useEffect(() => {
 		console.log(Posts);
 	}, [Posts]);
@@ -45,15 +63,36 @@ function Community() {
 				{Posts.map((post, idx) => {
 					return (
 						<article key={idx}>
-							<div className='txt'>
-								<h2>{post.title}</h2>
-								<p>{post.content}</p>
-							</div>
+							{post.enableUpdate ? (
+								<>
+									{/* 수정모드 출력 */}
+									<div className='txt'>
+										{/* 인풋요소에 onChange 이벤트로 제어하지 않는 input 요소의 value값은  defaultValue 속성으로 지정*/}
+										{/* value: 리액트의 상태값에 관리되는 폼요소 defaultValue : 일반 돔에 의해 관리되는 폼요소 */}
+										<input type='text' defaultValue={post.title} />
+										<br />
+										<textarea defaultValue={post.content} cols='3' rows='10'></textarea>
 
-							<nav className='btnSet'>
-								<button>EDIT</button>
-								<button onClick={() => deletePost(idx)}>DELETE</button>
-							</nav>
+										<nav className='btnSet'>
+											<button onClick={() => disenableUpdate(idx)}>CANCEL</button>
+											<button>UPDATE</button>
+										</nav>
+									</div>
+								</>
+							) : (
+								<>
+									{/* 출력모드 */}
+									<div className='txt'>
+										<h2>{post.title}</h2>
+										<p>{post.content}</p>
+									</div>
+
+									<nav className='btnSet'>
+										<button onClick={() => enableUpdate(idx)}>EDIT</button>
+										<button onClick={() => deletePost(idx)}>DELETE</button>
+									</nav>
+								</>
+							)}
 						</article>
 					);
 				})}
@@ -72,4 +111,10 @@ Delete - 데이터 삭제(게시글 삭제)
 
 Restful api 
 localStorage : 모든 브라우저마다 가지고 있는 경량의 데이터 베이스(문자열 저장)
+
+수정 모드 작업 흐름
+1- 수정 버튼 클릭시 해당 순번의 Posts의 객체에 수정관련 property 추가
+2- map으로 반복처리시 수정관련 property의 유무에 따라 수정모드, 출력모드 구분해서 분기처리 후 렌더링
+3- 출력모드: h2, p로 출력 / 수정모드: input, textarea로 값을 담아서 출력 (수정취소, 수정 버튼 추가)
+4- 수정모드에서 수정버튼 클릭시 State값 변경하고 해당 포스트의 수정관련 property 수정 
 */
