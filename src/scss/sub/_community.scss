@@ -45,9 +45,20 @@
 				flex-wrap: wrap;
 
 				.txt {
-					width: 88%;
+					width: 70%;
 					h2 {
 						margin-bottom: 10px;
+					}
+
+					input,
+					textarea {
+						width: 100%;
+						padding: 8px 10px;
+						border: 1px solid lightblue;
+						margin-bottom: 20px;
+						background: #f4ffff;
+						resize: none;
+						outline: none;
 					}
 				}
 				.btnSet {
