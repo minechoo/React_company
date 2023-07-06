@@ -1,4 +1,18 @@
 .Gallery {
+	button {
+		border: none;
+		background: transparent;
+		border: 1px solid #777;
+		padding: 5px 15px;
+		margin-right: 20px;
+		cursor: pointer;
+		transition: 0.5s;
+
+		&.on {
+			background: #555;
+			color: #fff;
+		}
+	}
 	.frame {
 		opacity: 0;
 		transform: translateY(200px);
