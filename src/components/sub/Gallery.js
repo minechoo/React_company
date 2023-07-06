@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import Masonry from 'react-masonry-component';
 
 function Gallery() {
+	let searchInput = useRef(null);
 	const btnSet = useRef(null);
 	const enableEvent = useRef(true);
 	const frame = useRef(null);
@@ -11,7 +12,7 @@ function Gallery() {
 	const [Items, setItems] = useState([]);
 	const [Loader, setLoader] = useState(true);
 
-	const getFlicker = async (opt) => {
+	const getFlickr = async (opt) => {
 		//새롭게 data fetching이 실행되면 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
 		//useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니라 직접 초기화해야됨
 		let counter = 0;
@@ -73,13 +74,47 @@ function Gallery() {
 		frame.current.classList.remove('on');
 	};
 
+	const showInterest = (e) => {
+		//재이벤트, 모션중 재이벤트 방지
+		if (!enableEvent.current) return;
+		if (e.target.classList.contains('on')) return;
+
+		//기존 갤러리 초기화 함수 호출
+		resetGallery(e);
+
+		//새로운 데이터로 갤러리 생성 함수 호출
+		getFlickr({ type: 'interest' });
+	};
+
+	const showMine = (e) => {
+		//재이벤트, 모션중 재이벤트 방지
+		if (!enableEvent.current) return;
+		if (e.target.classList.contains('on')) return;
+
+		//기존 갤러리 초기화 함수 호출
+		resetGallery(e);
+
+		//새로운 데이터로 갤러리 생성 함수 호출
+		getFlickr({ type: 'user', user: '194260994@N06' });
+	};
+
+	const showSearch = (e) => {
+		const tag = searchInput.current.value.trim();
+		if (tag === '') return alert('검색어를 입력하세요');
+
+		if (!enableEvent.current) return;
+		resetGallery(e);
+		getFlickr({ type: 'search', tags: tag });
+		searchInput.current.value = '';
+	};
+
 	//미션1 - 아래 호출문으로 풍경이미지 검색되도록 함수 코드 수정
 	//getFlickr({type: 'search', tags: 'landscape'})
 
 	//미션2 - 아래 호출문으로 내 계정의 이미지 갤러리 호출되도록
 	//getFlickr({type: 'user', user: '내아이디'})
-	// useEffect(() => getFlicker({ type: 'user', user: '194260994@N06' }), []);
-	useEffect(() => getFlicker({ type: 'interest' }), []);
+	// useEffect(() => getFlickr({ type: 'user', user: '194260994@N06' }), []);
+	useEffect(() => getFlickr({ type: 'interest' }), []);
 
 	return (
 		<Layout name={'Gallery'}>
@@ -87,37 +122,25 @@ function Gallery() {
 				<div className='searchBox'>
 					<div className='search'>
 						<label htmlFor='search'></label>
-						<input type='text' id='search' name='' placeholder='검색어입력' />
-						<button className='btn_search'>Search</button>
+						<input
+							type='text'
+							id='search'
+							name=''
+							defaultValue=''
+							placeholder='검색어를 입력하세요'
+							ref={searchInput}
+							onKeyPress={(e) => e.key === 'Enter' && showSearch(e)}
+						/>
+						<button className='btn_search' onClick={showSearch}>
+							Search
+						</button>
 					</div>
 
 					<div className='btnSet' ref={btnSet}>
-						<button
-							className='btnInterest on'
-							onClick={(e) => {
-								//재이벤트, 모션중 재이벤트 방지
-								if (!enableEvent.current) return;
-								if (e.target.classList.contains('on')) return;
-
-								//기존 갤러리 초기화 함수 호출
-								resetGallery(e);
-								getFlicker({ type: 'interest' });
-							}}
-						>
+						<button className='btnInterest on' onClick={showInterest}>
 							Interest Gallery
 						</button>
-						<button
-							className='btnMine'
-							onClick={(e) => {
-								//재이벤트, 모션중 재이벤트 방지
-								if (!enableEvent.current) return;
-								if (e.target.classList.contains('on')) return;
-
-								//기존 갤러리 초기화 함수 호출
-								resetGallery(e);
-								getFlicker({ type: 'user', user: '194260994@N06' });
-							}}
-						>
+						<button className='btnMine' onClick={showMine}>
 							My Gallery
 						</button>
 					</div>
@@ -137,7 +160,7 @@ function Gallery() {
 										</div>
 										<h2>{item.title === '' ? 'Have a good day!!' : item.title}</h2>
 
-										<div class='profile'>
+										<div className='profile'>
 											<img
 												src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
 												alt={item.owner}
@@ -148,7 +171,7 @@ function Gallery() {
 												onClick={() => {
 													setLoader(true);
 													frame.current.classList.remove('on');
-													getFlicker({ type: 'user', user: item.owner });
+													getFlickr({ type: 'user', user: item.owner });
 												}}
 											>
 												{item.owner}
