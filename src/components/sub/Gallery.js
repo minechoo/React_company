@@ -4,7 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import Masonry from 'react-masonry-component';
 
 function Gallery() {
-	let searchInput = useRef(null);
+	const isUser = useRef(true);
+	const searchInput = useRef(null);
 	const btnSet = useRef(null);
 	const enableEvent = useRef(true);
 	const frame = useRef(null);
@@ -33,6 +34,15 @@ function Gallery() {
 			url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
 
 		const result = await axios.get(url);
+		if (result.data.photos.photo.length === 0) {
+			setLoader(false);
+			frame.current.classList.add('on');
+			const btnMine = btnSet.current.children;
+			btnMine[0].classList.add('on');
+			getFlickr({ type: 'interest' });
+			enableEvent.current = true;
+			return alert('이미지 결과값이 없습니다');
+		}
 		console.log(result.data.photos.photo);
 		setItems(result.data.photos.photo);
 
@@ -47,7 +57,7 @@ function Gallery() {
 
 				//임시방편 - 전체 이미지 갯수가 하나 모잘라도 출력되게 수정
 				//문제점 - myGallery, interestGallery는 전체 이미지 카운트가 잘 되는데 특정 사용자 갤러리만 갯수가 1씩 모자라는 현상
-				if (counter === imgs.length - 1) {
+				if (counter === imgs.length - 2) {
 					//로더 제거하고 이미지 갤러리 보임처리
 					setLoader(false);
 					frame.current.classList.add('on');
@@ -84,6 +94,7 @@ function Gallery() {
 
 		//새로운 데이터로 갤러리 생성 함수 호출
 		getFlickr({ type: 'interest' });
+		isUser.current = false;
 	};
 
 	const showMine = (e) => {
@@ -106,6 +117,7 @@ function Gallery() {
 		resetGallery(e);
 		getFlickr({ type: 'search', tags: tag });
 		searchInput.current.value = '';
+		isUser.current = false;
 	};
 
 	//미션1 - 아래 호출문으로 풍경이미지 검색되도록 함수 코드 수정
@@ -168,10 +180,12 @@ function Gallery() {
 											/>
 											<span
 												className='userid'
-												onClick={() => {
+												onClick={(e) => {
+													if (isUser.current) return;
+													isUser.current = true;
 													setLoader(true);
 													frame.current.classList.remove('on');
-													getFlickr({ type: 'user', user: item.owner });
+													getFlickr({ type: 'user', user: e.target.innerText });
 												}}
 											>
 												{item.owner}
