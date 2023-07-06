@@ -4,9 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import Masonry from 'react-masonry-component';
 
 function Gallery() {
-	const btnMine = useRef(null);
-	const btnInterest = useRef(null);
-	const enabletEvent = useRef(true);
+	const btnSet = useRef(null);
+	const enableEvent = useRef(true);
 	const frame = useRef(null);
 	//const counter = useRef(0);
 	const [Items, setItems] = useState([]);
@@ -58,10 +57,20 @@ function Gallery() {
 					//debouncing: 이벤트 발생히 바로 호출하는게 아닌 일정시간 텀을 두고 마지막에 발생한 이벤트만 호출
 					//throttling: 이벤트 발생시 호출되는 함수자체를 적게 호출
 
-					enabletEvent.current = true;
+					enableEvent.current = true;
 				}
 			};
 		});
+	};
+
+	//기존 갤러리 초기화 함수
+	const resetGallery = (e) => {
+		const btns = btnSet.current.querySelectorAll('button');
+		btns.forEach((el) => el.classList.remove('on'));
+		e.target.classList.add('on');
+		enableEvent.current = false;
+		setLoader(true);
+		frame.current.classList.remove('on');
 	};
 
 	//미션1 - 아래 호출문으로 풍경이미지 검색되도록 함수 코드 수정
@@ -82,18 +91,16 @@ function Gallery() {
 						<button className='btn_search'>Search</button>
 					</div>
 
-					<div className='btnSet'>
+					<div className='btnSet' ref={btnSet}>
 						<button
 							className='btnInterest on'
-							ref={btnInterest}
 							onClick={(e) => {
-								if (!enabletEvent.current) return;
+								//재이벤트, 모션중 재이벤트 방지
+								if (!enableEvent.current) return;
 								if (e.target.classList.contains('on')) return;
-								btnMine.current.classList.remove('on');
-								e.target.classList.add('on');
-								enabletEvent.current = false;
-								setLoader(true);
-								frame.current.classList.remove('on');
+
+								//기존 갤러리 초기화 함수 호출
+								resetGallery(e);
 								getFlicker({ type: 'interest' });
 							}}
 						>
@@ -101,15 +108,13 @@ function Gallery() {
 						</button>
 						<button
 							className='btnMine'
-							ref={btnMine}
 							onClick={(e) => {
-								if (!enabletEvent.current) return;
+								//재이벤트, 모션중 재이벤트 방지
+								if (!enableEvent.current) return;
 								if (e.target.classList.contains('on')) return;
-								btnInterest.current.classList.remove('on');
-								e.target.classList.add('on');
-								enabletEvent.current = false;
-								setLoader(true);
-								frame.current.classList.remove('on');
+
+								//기존 갤러리 초기화 함수 호출
+								resetGallery(e);
 								getFlicker({ type: 'user', user: '194260994@N06' });
 							}}
 						>
