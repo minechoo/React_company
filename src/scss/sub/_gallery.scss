@@ -1,5 +1,8 @@
 .Gallery {
 	.frame {
+		opacity: 0;
+		transform: translateY(200px);
+		transition: 0.5s;
 		&::after {
 			content: '';
 			display: block;
@@ -30,6 +33,7 @@
 					margin-bottom: 30px;
 					margin-top: 10px;
 				}
+
 				.profile {
 					display: flex;
 					align-items: center;
@@ -39,10 +43,23 @@
 						width: 40px;
 					}
 					span {
+						cursor: pointer;
+						font-size: 11px;
 						color: orange;
 					}
 				}
 			}
 		}
+	}
+	.frame.on {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	.loader {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 }
