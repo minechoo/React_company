@@ -13,6 +13,8 @@ const Modal = forwardRef((props, ref) => {
 	}, [Open]);
 
 	return (
+		//주의점 : AnimatePresence 사용시 내부 컴포넌트에 연결되어 있는 ref값을 제거 (useImperativeHandle 쓸때)
+		//React 17버전에서는 framer-motion을 6버전대로 설치
 		//컴포넌트 언마운트시 모션효과가 끝날때까지 언마운트를 자동 지연시켜줌
 		<AnimatePresence>
 			{Open && (
@@ -20,7 +22,6 @@ const Modal = forwardRef((props, ref) => {
 				//x(가로축), y(세로축), rotate(회전), scale(확대축소)
 				<motion.aside
 					className='modal'
-					ref={ref}
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1, transition: { duration: 0.5 } }}
 					exit={{ opacity: 0, transition: { duration: 4 } }}

@@ -173,8 +173,9 @@ function Gallery() {
 											<div
 												className='pic'
 												onClick={() => {
-													openModal.current.open();
+													openModal.current?.open();
 													setIndex(idx);
+													console.log(openModal);
 												}}
 											>
 												<img
