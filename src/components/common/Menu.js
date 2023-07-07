@@ -1,13 +1,21 @@
-import { forwardRef, useState, useImperativeHandle } from 'react';
+import { forwardRef, useState, useImperativeHandle, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink } from 'react-router-dom';
 
 const Menu = forwardRef((props, ref) => {
 	const active = { color: 'aqua' };
 	const [Open, setOpen] = useState(false);
+
+	useEffect(() => {
+		window.addEventListener('resize', () => {
+			if (window.innerWidth >= 1200) setOpen(false);
+		});
+	}, []);
+
 	useImperativeHandle(ref, () => {
 		return { toggle: () => setOpen(!Open) };
 	});
+
 	return (
 		<AnimatePresence>
 			{Open && (
