@@ -22,14 +22,27 @@ const Modal = forwardRef((props, ref) => {
 				//x(가로축), y(세로축), rotate(회전), scale(확대축소)
 				<motion.aside
 					className='modal'
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1, transition: { duration: 0.5 } }}
-					exit={{ opacity: 0, transition: { duration: 4 } }}
+					initial={{ opacity: 0, x: '100%' }}
+					animate={{ opacity: 1, x: '0%', transition: { duration: 0.5 } }}
+					exit={{ opacity: 0, scale: 0, transition: { duration: 4 } }}
 				>
-					<div className='con'>{props.children}</div>
-					<span className='close' onClick={() => setOpen(false)}>
+					<motion.div
+						className='con'
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1, transition: { delay: 0.5 } }}
+						exit={{ opacity: 0, transition: { delay: 0 } }}
+					>
+						{props.children}
+					</motion.div>
+					<motion.span
+						className='close'
+						onClick={() => setOpen(false)}
+						initial={{ opacity: 0, y: 100 }}
+						animate={{ opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.5 } }}
+						exit={{ opacity: 0, x: -100, transition: { duration: 0.5, delay: 0 } }}
+					>
 						close
-					</span>
+					</motion.span>
 				</motion.aside>
 			)}
 		</AnimatePresence>
