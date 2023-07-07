@@ -1,17 +1,21 @@
 import Layout from '../common/Layout';
+import Modal from '../common/Modal';
 import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
 import Masonry from 'react-masonry-component';
 
 function Gallery() {
+	const openModal = useRef(null);
 	const isUser = useRef(true);
 	const searchInput = useRef(null);
 	const btnSet = useRef(null);
 	const enableEvent = useRef(true);
 	const frame = useRef(null);
+
 	//const counter = useRef(0);
 	const [Items, setItems] = useState([]);
 	const [Loader, setLoader] = useState(true);
+	const [Index, setIndex] = useState(0);
 
 	const getFlickr = async (opt) => {
 		//새롭게 data fetching이 실행되면 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
@@ -49,6 +53,7 @@ function Gallery() {
 		//외부데이터가 State에 담기고 DOM이 생성되는 순간
 		//모든 img요소를 찾아서 반복처리
 		const imgs = frame.current.querySelectorAll('img');
+
 		imgs.forEach((img) => {
 			//이미지요소에 load이벤트가 발생할때 (소스이미지까지 로딩이 완료될떄마다)
 			img.onload = () => {
@@ -129,77 +134,92 @@ function Gallery() {
 	useEffect(() => getFlickr({ type: 'interest' }), []);
 
 	return (
-		<Layout name={'Gallery'}>
-			<>
-				<div className='searchBox'>
-					<div className='search'>
-						<label htmlFor='search'></label>
-						<input
-							type='text'
-							id='search'
-							name=''
-							defaultValue=''
-							placeholder='검색어를 입력하세요'
-							ref={searchInput}
-							onKeyPress={(e) => e.key === 'Enter' && showSearch(e)}
-						/>
-						<button className='btn_search' onClick={showSearch}>
-							Search
-						</button>
+		<>
+			<Layout name={'Gallery'}>
+				<>
+					<div className='searchBox'>
+						<div className='search'>
+							<label htmlFor='search'></label>
+							<input
+								type='text'
+								id='search'
+								name=''
+								defaultValue=''
+								placeholder='검색어를 입력하세요'
+								ref={searchInput}
+								onKeyPress={(e) => e.key === 'Enter' && showSearch(e)}
+							/>
+							<button className='btn_search' onClick={showSearch}>
+								Search
+							</button>
+						</div>
+
+						<div className='btnSet' ref={btnSet}>
+							<button className='btnInterest on' onClick={showInterest}>
+								Interest Gallery
+							</button>
+							<button className='btnMine' onClick={showMine}>
+								My Gallery
+							</button>
+						</div>
 					</div>
 
-					<div className='btnSet' ref={btnSet}>
-						<button className='btnInterest on' onClick={showInterest}>
-							Interest Gallery
-						</button>
-						<button className='btnMine' onClick={showMine}>
-							My Gallery
-						</button>
-					</div>
-				</div>
-
-				<div className='frame' ref={frame}>
-					<Masonry elementType={'div'} options={{ transitionDuration: '0.5s' }}>
-						{Items.map((item, idx) => {
-							return (
-								<article key={idx}>
-									<div className='inner'>
-										<div className='pic'>
-											<img
-												src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
-												alt={item.title}
-											/>
-										</div>
-										<h2>{item.title === '' ? 'Have a good day!!' : item.title}</h2>
-
-										<div className='profile'>
-											<img
-												src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
-												alt={item.owner}
-												onError={(e) => e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif')}
-											/>
-											<span
-												className='userid'
-												onClick={(e) => {
-													if (isUser.current) return;
-													isUser.current = true;
-													setLoader(true);
-													frame.current.classList.remove('on');
-													getFlickr({ type: 'user', user: e.target.innerText });
+					<div className='frame' ref={frame}>
+						<Masonry elementType={'div'} options={{ transitionDuration: '0.5s' }}>
+							{Items.map((item, idx) => {
+								return (
+									<article key={idx}>
+										<div className='inner'>
+											<div
+												className='pic'
+												onClick={() => {
+													openModal.current.open();
+													setIndex(idx);
 												}}
 											>
-												{item.owner}
-											</span>
+												<img
+													src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
+													alt={item.title}
+												/>
+											</div>
+											<h2>{item.title === '' ? 'Have a good day!!' : item.title}</h2>
+
+											<div className='profile'>
+												<img
+													src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
+													alt={item.owner}
+													onError={(e) => e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif')}
+												/>
+												<span
+													className='userid'
+													onClick={(e) => {
+														if (isUser.current) return;
+														isUser.current = true;
+														setLoader(true);
+														frame.current.classList.remove('on');
+														getFlickr({ type: 'user', user: e.target.innerText });
+													}}
+												>
+													{item.owner}
+												</span>
+											</div>
 										</div>
-									</div>
-								</article>
-							);
-						})}
-					</Masonry>
-				</div>
-				{Loader && <img className='loader' src={`${process.env.PUBLIC_URL}/img/loading.gif`} alt='loader' />}
-			</>
-		</Layout>
+									</article>
+								);
+							})}
+						</Masonry>
+					</div>
+					{Loader && <img className='loader' src={`${process.env.PUBLIC_URL}/img/loading.gif`} alt='loader' />}
+				</>
+			</Layout>
+
+			<Modal ref={openModal}>
+				<img
+					src={`https://live.staticflickr.com/${Items[Index]?.server}/${Items[Index]?.id}_${Items[Index]?.secret}_b.jpg`}
+					alt={Items[Index]?.title}
+				/>
+			</Modal>
+		</>
 	);
 }
 
