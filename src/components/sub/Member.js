@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Layout from '../common/Layout';
 import { useHistory } from 'react-router-dom';
 
@@ -7,16 +7,18 @@ function Member() {
 	const radioGroup = useRef(null);
 	const checkGroup = useRef(null);
 	const history = useHistory();
-	const initVal = {
-		userid: '',
-		pwd1: '',
-		pwd2: '',
-		email: '',
-		gender: '',
-		interests: [],
-		edu: '',
-		comments: '',
-	};
+	const initVal = useMemo(() => {
+		return {
+			userid: '',
+			pwd1: '',
+			pwd2: '',
+			email: '',
+			gender: '',
+			interests: [],
+			edu: '',
+			comments: '',
+		};
+	}, []);
 
 	const [Val, setVal] = useState(initVal);
 	const [Err, setErr] = useState({});
@@ -97,7 +99,7 @@ function Member() {
 		return errs;
 	};
 
-	const resetForm = () => {
+	const resetForm = useCallback(() => {
 		const select = selectEl.current.options[0];
 		const checks = checkGroup.current.querySelectorAll('input');
 		const radios = radioGroup.current.querySelectorAll('input');
@@ -105,7 +107,7 @@ function Member() {
 		checks.forEach((el) => (el.checked = false));
 		radios.forEach((el) => (el.checked = false));
 		setVal(initVal);
-	};
+	}, [initVal]);
 
 	useEffect(() => {
 		//객체의 키값을 배열로 반환한다음 해당 배열의 갯수를 저장
@@ -116,7 +118,7 @@ function Member() {
 			//history.push('/');
 			resetForm();
 		}
-	}, [Err]);
+	}, [Err, Submit, resetForm]);
 
 	useEffect(() => {
 		console.log(Val);
