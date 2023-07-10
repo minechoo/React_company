@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, NavLink } from 'react-router-dom';
 //import Menu from './Menu';
 //import { useRef } from 'react';
+import { memo } from 'react';
 
 function Header({ type, menu }) {
+	console.log('header');
 	// const active = { color: 'aqua' };
 	const active = 'on';
 	//const toggleMenu = useRef(null);
@@ -61,4 +63,4 @@ function Header({ type, menu }) {
 	);
 }
 
-export default Header;
+export default memo(Header);

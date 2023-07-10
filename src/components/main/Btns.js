@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Anime from '../../asset/anime';
+import { memo } from 'react';
 
 function Btns({ setScrolled, setPos }) {
 	const btnRef = useRef(null);
@@ -83,4 +84,4 @@ function Btns({ setScrolled, setPos }) {
 	);
 }
 
-export default Btns;
+export default memo(Btns);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { memo } from 'react';
 
 function News() {
 	const dummy = [
@@ -35,4 +36,4 @@ function News() {
 	);
 }
 
-export default News;
+export default memo(News);
