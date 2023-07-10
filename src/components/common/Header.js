@@ -1,13 +1,13 @@
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, NavLink } from 'react-router-dom';
-import Menu from './Menu';
-import { useRef } from 'react';
+//import Menu from './Menu';
+//import { useRef } from 'react';
 
-function Header({ type }) {
+function Header({ type, menu }) {
 	// const active = { color: 'aqua' };
 	const active = 'on';
-	const toggleMenu = useRef(null);
+	//const toggleMenu = useRef(null);
 	return (
 		//prop으로 전달되는 type값을 header의 class명으로 지칭해서 스타일 분기처리
 		<>
@@ -52,12 +52,11 @@ function Header({ type }) {
 				<FontAwesomeIcon
 					icon={faBars}
 					onClick={() => {
-						toggleMenu.current.toggle();
+						// toggleMenu.current.toggle();
+						menu.current.toggle();
 					}}
 				/>
 			</header>
-
-			<Menu ref={toggleMenu} />
 		</>
 	);
 }

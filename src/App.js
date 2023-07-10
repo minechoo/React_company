@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 //common
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
+import Menu from './components/common/Menu';
 // main
 import Main from './components/main/Main';
 //sub
@@ -14,13 +15,16 @@ import Member from './components/sub/Member';
 import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
-
+import { useRef } from 'react';
+//Menu 컴포넌트를 App새거 호출한 뒤 토글 객체를 각각 메이느 섭브 헤더로 전달해서 토글메뉴기능이 가능하도록
 function App() {
+	const menu = useRef(null);
+
 	return (
 		<>
 			<Switch>
-				<Route exact path='/' component={Main} />
-				<Route path='/' render={() => <Header type={'sub'} />} />
+				<Route exact path='/' render={() => <Main menu={menu} />} />
+				<Route path='/' render={() => <Header type={'sub'} menu={menu} />} />
 			</Switch>
 
 			<Route path='/department' component={Department} />
@@ -36,6 +40,8 @@ function App() {
 			<Route path='/member' component={Member} />
 
 			<Footer />
+
+			<Menu ref={menu} />
 		</>
 	);
 }
