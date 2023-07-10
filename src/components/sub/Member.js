@@ -7,20 +7,18 @@ function Member() {
 	const radioGroup = useRef(null);
 	const checkGroup = useRef(null);
 	const history = useHistory();
-	const initVal = useMemo(() => {
-		return {
-			userid: '',
-			pwd1: '',
-			pwd2: '',
-			email: '',
-			gender: '',
-			interests: [],
-			edu: '',
-			comments: '',
-		};
-	}, []);
+	const initVal = useRef({
+		userid: '',
+		pwd1: '',
+		pwd2: '',
+		email: '',
+		gender: '',
+		interests: [],
+		edu: '',
+		comments: '',
+	});
 
-	const [Val, setVal] = useState(initVal);
+	const [Val, setVal] = useState(initVal.current);
 	const [Err, setErr] = useState({});
 	const [Submit, setSubmit] = useState(false);
 
@@ -107,7 +105,7 @@ function Member() {
 		checks.forEach((el) => (el.checked = false));
 		radios.forEach((el) => (el.checked = false));
 		setVal(initVal);
-	}, [initVal]);
+	}, []);
 
 	useEffect(() => {
 		//객체의 키값을 배열로 반환한다음 해당 배열의 갯수를 저장
