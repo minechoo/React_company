@@ -39,6 +39,9 @@ function Contact() {
 	]);
 	//아래 5개 변수값들은 useEffect 구문에서 인스턴스 생성할때만 필요한 정보값에 불과하므로 미리 읽히도록 useEffect 바깥에 배치
 
+	//marker의 정보값을 useMemo로 메모이제이션 해야 되는 이유
+	//해당 정보값이 바뀌지않는 static한 값이 아니고 State에 의해서 계속 변경되는 값이기 때문에
+	//내부에 index State값이 바뀔때마 임시로 메모이제이션을 풀기 위해서 useMemo에 Index State를 의존성 배열에 등록해야 되기 때문
 	const marker = useMemo(() => {
 		return new kakao.maps.Marker({
 			position: info.current[Index].latlng,
