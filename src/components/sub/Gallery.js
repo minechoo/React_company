@@ -1,7 +1,7 @@
 import Layout from '../common/Layout';
 import Modal from '../common/Modal';
 import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Masonry from 'react-masonry-component';
 
 function Gallery() {
@@ -17,7 +17,7 @@ function Gallery() {
 	const [Loader, setLoader] = useState(true);
 	const [Index, setIndex] = useState(0);
 
-	const getFlickr = async (opt) => {
+	const getFlickr = useCallback(async (opt) => {
 		//새롭게 data fetching이 실행되면 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
 		//useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니라 직접 초기화해야됨
 		let counter = 0;
@@ -77,7 +77,7 @@ function Gallery() {
 				}
 			};
 		});
-	};
+	}, []);
 
 	//기존 갤러리 초기화 함수
 	const resetGallery = (e) => {
@@ -131,7 +131,7 @@ function Gallery() {
 	//미션2 - 아래 호출문으로 내 계정의 이미지 갤러리 호출되도록
 	//getFlickr({type: 'user', user: '내아이디'})
 	// useEffect(() => getFlickr({ type: 'user', user: '194260994@N06' }), []);
-	useEffect(() => getFlickr({ type: 'interest' }), []);
+	useEffect(() => getFlickr({ type: 'interest' }), [getFlickr]);
 
 	return (
 		<>

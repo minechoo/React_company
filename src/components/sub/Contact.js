@@ -1,5 +1,5 @@
 import Layout from '../common/Layout';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import emailjs from '@emailjs/browser';
 
 function Contact() {
@@ -14,7 +14,7 @@ function Contact() {
 	const container = useRef(null);
 	//일반 HTML버전과는 달리 윈도우객체에서 직접 kakao 상의 객체값을 뽑아옴
 	const { kakao } = window;
-	const info = [
+	const info = useRef([
 		{
 			title: '삼성역 코엑스',
 			latlng: new kakao.maps.LatLng(37.51100661425726, 127.06162026853143),
@@ -36,21 +36,19 @@ function Contact() {
 			imgSize: new kakao.maps.Size(232, 99),
 			imgPos: { offset: new kakao.maps.Point(116, 99) },
 		},
-	];
-	const option = {
-		center: info[Index].latlng, // 지도의 중심좌표
-		level: 3, // 지도의 확대 레벨
-	};
+	]);
 	//아래 5개 변수값들은 useEffect 구문에서 인스턴스 생성할때만 필요한 정보값에 불과하므로 미리 읽히도록 useEffect 바깥에 배치
-	const imageSrc = info[Index].imgSrc; // 마커이미지의 주소입니다
-	const imageSize = info[Index].imgSize; // 마커이미지의 크기입니다
-	const imageOption = info[Index].imgPos;
-	const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
-	const marker = new kakao.maps.Marker({
-		position: option.center,
-		image: markerImage,
-	});
+	const marker = useMemo(() => {
+		return new kakao.maps.Marker({
+			position: info.current[Index].latlng,
+			image: new kakao.maps.MarkerImage(
+				info.current[Index].imgSrc,
+				info.current[Index].imgSize,
+				info.current[Index].imgPos
+			),
+		});
+	}, [Index, kakao]);
 
 	//email
 	const form = useRef();
@@ -76,7 +74,7 @@ function Contact() {
 	useEffect(() => {
 		container.current.innerHTML = '';
 		//인스턴스 호출구문은 컴포넌트 처음 마운트시 호출
-		const mapInstance = new kakao.maps.Map(container.current, option);
+		const mapInstance = new kakao.maps.Map(container.current, { center: info.current[Index].latlng, level: 3 });
 
 		marker.setMap(mapInstance);
 
@@ -86,7 +84,7 @@ function Contact() {
 		//setCenter가 호출시 내부적으로 Index State 값에 의존하기때문에
 		//useEffect안쪽에서 setCenter함수를 정의하고 호출
 		const setCenter = () => {
-			mapInstance?.setCenter(info[Index].latlng);
+			mapInstance?.setCenter(info.current[Index].latlng);
 		};
 		//지역변수의 mapInstance값을 다른 함수에서도 활용해야 되므로 Location state에 해당 인스턴스 값 지정
 		window.addEventListener('resize', setCenter);
@@ -95,7 +93,7 @@ function Contact() {
 		mapInstance.setZoomable(false);
 
 		return () => window.removeEventListener('resize', setCenter);
-	}, [Index]);
+	}, [Index, kakao, marker]);
 
 	useEffect(() => {
 		//Location state에 담겨있는 앱 인스턴스로부터 traffic레이어 호출구문처리
@@ -103,14 +101,14 @@ function Contact() {
 		Traffic
 			? Location?.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC)
 			: Location?.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
-	}, [Traffic]);
+	}, [Traffic, Location, kakao]);
 
 	return (
 		<Layout name={'Contact'}>
 			<div id='map' ref={container}></div>
 			<button onClick={() => setTraffic(!Traffic)}>{Traffic ? 'Traffic on' : 'Traffic off'}</button>
 			<ul className='branch'>
-				{info.map((el, idx) => {
+				{info.current.map((el, idx) => {
 					return (
 						<li key={idx} className={idx === Index ? 'on' : ''} onClick={() => setIndex(idx)}>
 							{el.title}
