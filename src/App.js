@@ -15,7 +15,7 @@ import Member from './components/sub/Member';
 import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -26,7 +26,7 @@ function App() {
 	const dispatch = useDispatch();
 	const menu = useRef(null);
 
-	const patchYoutube = async () => {
+	const fetchYoutube = useCallback(async () => {
 		const key = 'AIzaSyANMdnk7q2cBX8tqGJZXpVFH9bGJMOwmEc'; //api 키
 		const list = 'PLMafzyXZ12TPBYgeplFEdJeSMcJvb3v5u'; //class 브라우저 상단값
 		const num = 10;
@@ -34,11 +34,11 @@ function App() {
 
 		const result = await axios.get(url);
 		dispatch(setYoutube(result.data.items));
-	};
+	}, [dispatch]);
 
 	useEffect(() => {
-		patchYoutube();
-	}, []);
+		fetchYoutube();
+	}, [fetchYoutube]);
 
 	return (
 		<>
