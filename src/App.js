@@ -19,12 +19,20 @@ import { useRef, useEffect, useCallback } from 'react';
 
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setYoutube } from './redux/action';
+import { setYoutube, setMembers } from './redux/action';
 
 //Menu 컴포넌트를 App새거 호출한 뒤 토글 객체를 각각 메이느 섭브 헤더로 전달해서 토글메뉴기능이 가능하도록
 function App() {
 	const dispatch = useDispatch();
 	const menu = useRef(null);
+
+	//메인 처음 마운트시 데이터 fetching후 store에 저장
+	const fetchMembers = useCallback(async () => {
+		const result = await axios.get(`${process.env.PUBLIC_URL}/DB/members.json`);
+		console.log(result.data.members);
+		console.log(setMembers(result.data.members));
+		dispatch(setMembers(result.data.members));
+	}, [dispatch]);
 
 	const fetchYoutube = useCallback(async () => {
 		const key = 'AIzaSyANMdnk7q2cBX8tqGJZXpVFH9bGJMOwmEc'; //api 키
@@ -38,7 +46,8 @@ function App() {
 
 	useEffect(() => {
 		fetchYoutube();
-	}, [fetchYoutube]);
+		fetchMembers();
+	}, [fetchYoutube, fetchMembers]);
 
 	return (
 		<>
