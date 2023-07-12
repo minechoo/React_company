@@ -9,6 +9,13 @@ export const setMembers = (data) => {
 	};
 };
 
+export const setYoutube = (data) => {
+	return {
+		type: 'SET_YOUTUBE',
+		payload: data,
+	};
+};
+
 /*
 	1- action.js -> 액션 생성후 리턴
   2- reducer.js -> 액션 객체를 받아서 전역데이터를 변형한뒤 리턴

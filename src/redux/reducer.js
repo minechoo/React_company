@@ -47,7 +47,18 @@ const memberReducer = (state = initMember, action) => {
 			return state;
 	}
 };
+
+const youtubeReducer = (state = { youtube: [] }, action) => {
+	switch (action.type) {
+		case 'SET_YOUTUBE':
+			//기존 state를 action.payload로 덮어쓰기
+			return { ...state, youtube: action.payload };
+
+		default:
+			return state;
+	}
+};
 //해당 변형자 함수가 반환하는 객체값을 하나의 객체로 합쳐서 외부로 export
-const reducers = combineReducers({ memberReducer });
+const reducers = combineReducers({ memberReducer, youtubeReducer });
 
 export default reducers;
