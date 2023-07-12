@@ -15,10 +15,30 @@ import Member from './components/sub/Member';
 import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setYoutube } from './redux/action';
+
 //Menu 컴포넌트를 App새거 호출한 뒤 토글 객체를 각각 메이느 섭브 헤더로 전달해서 토글메뉴기능이 가능하도록
 function App() {
+	const dispatch = useDispatch();
 	const menu = useRef(null);
+
+	const patchYoutube = async () => {
+		const key = 'AIzaSyANMdnk7q2cBX8tqGJZXpVFH9bGJMOwmEc'; //api 키
+		const list = 'PLMafzyXZ12TPBYgeplFEdJeSMcJvb3v5u'; //class 브라우저 상단값
+		const num = 10;
+		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
+
+		const result = await axios.get(url);
+		dispatch(setYoutube(result.data.items));
+	};
+
+	useEffect(() => {
+		patchYoutube();
+	}, []);
 
 	return (
 		<>

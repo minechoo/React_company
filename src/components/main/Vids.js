@@ -1,6 +1,16 @@
 import { memo } from 'react';
-function vids() {
-	return <section id='vids' className='myScroll'></section>;
-}
+import { useSelector } from 'react-redux';
 
-export default memo(vids);
+function Vids() {
+	const youtube = useSelector((store) => store.youtubeReducer.youtube);
+	console.log(youtube);
+	return (
+		<section id='vids' className='myScroll'>
+			{youtube.map((vid, idx) => {
+				if (idx >= 4) return null;
+				return <img key={vid.id} src={vid.snippet.thumbnails.medium.url} alt={vid.snippet.title} />;
+			})}
+		</section>
+	);
+}
+export default memo(Vids);
