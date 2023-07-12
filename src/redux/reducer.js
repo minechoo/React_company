@@ -40,6 +40,7 @@ const initMember = {
 const memberReducer = (state = initMember, action) => {
 	switch (action.type) {
 		case 'SET_MEMBERS':
+			//기존 state를 action.payload로 덮어쓰기
 			return { ...state, members: action.payload };
 
 		default:
