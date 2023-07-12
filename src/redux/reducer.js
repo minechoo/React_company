@@ -35,7 +35,7 @@ const initMember = {
 		},
 	],
 };
-//초기 데이터값을 state로 저장하고 추후 action 객체거 넘어오면 action의 타입에 따라 해당 데이터를 변경해주는
+//초기 데이터값을 state로 저장하고 추후 action 객체가 넘어오면 action의 타입에 따라 해당 데이터를 변경해주는
 //변형자 함수 생성
 const memberReducer = (state = initMember, action) => {
 	switch (action.type) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Layout from '../common/Layout';
 import { useHistory } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ function Member() {
 	const radioGroup = useRef(null);
 	const checkGroup = useRef(null);
 	const history = useHistory();
+	//initVal값을 굳이 useMemo로 메모이제이션 하지 않더라도 useRef로 담아놓으면 해당 값은 컴포넌트가 재랜더링되더라도 값을 기억
 	const initVal = useRef({
 		userid: '',
 		pwd1: '',
@@ -17,6 +18,8 @@ function Member() {
 		edu: '',
 		comments: '',
 	});
+	//initVal의 값은 변경될 필요가 없는 초기값이긴 하나 컴포넌트가 재호출 될때마다 계속해서 초기화되는 값이므로
+	//해당 값을 초기화하지 않고 메모이제이션할 필요가 있음 (선택사항)
 
 	const [Val, setVal] = useState(initVal.current);
 	const [Err, setErr] = useState({});
