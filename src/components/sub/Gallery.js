@@ -4,6 +4,16 @@ import axios from 'axios';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Masonry from 'react-masonry-component';
 
+/*
+	라우터로 컴포넌트를 빠르게 이동시 메모리 누수(memory leak) 오류가 발생하는 이유
+	- fetching되는 데이타가 많아서 state에 해당 값을 담는데 시간이 오래 걸리는 경우
+	- 아직 state에 값이 다 담기지 않았는데 컴포넌트 이동을 해서 해당 컴포넌트가 언마운트되면 
+	- state에 값 담기는 동작이 중단되야됨에도 불구하고 계속 동작되고 있으므로 메모리 누수가 발생하면서 오류 출력
+	해결방법
+	- 특정 State를 해당 컴포넌트에 만들어서 그 state값이 true일때에만 data fetching후 state에 값을 담기게 만들고
+	- 해당 컴포넌트가 언마운트시 state값을 false로 변경
+*/
+
 function Gallery() {
 	const openModal = useRef(null);
 	const isUser = useRef(true);
@@ -16,68 +26,75 @@ function Gallery() {
 	const [Items, setItems] = useState([]);
 	const [Loader, setLoader] = useState(true);
 	const [Index, setIndex] = useState(0);
+	const [Mounted, setMounted] = useState(true);
 
-	const getFlickr = useCallback(async (opt) => {
-		//새롭게 data fetching이 실행되면 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
-		//useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니라 직접 초기화해야됨
-		let counter = 0;
-		// counter.current = 0;
-		const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
-		const key = '86fbba2c96b5252a51879bc23af1f41e';
-		const method_interest = 'flickr.interestingness.getList';
-		const method_user = 'flickr.people.getPhotos';
-		const method_search = 'flickr.photos.search';
-		const num = 50;
-		let url = '';
-		//const myId = '194260994@N06';
+	const getFlickr = useCallback(
+		async (opt) => {
+			//새롭게 data fetching이 실행되면 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
+			//useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니라 직접 초기화해야됨
+			let counter = 0;
+			// counter.current = 0;
+			const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
+			const key = '86fbba2c96b5252a51879bc23af1f41e';
+			const method_interest = 'flickr.interestingness.getList';
+			const method_user = 'flickr.people.getPhotos';
+			const method_search = 'flickr.photos.search';
+			const num = 50;
+			let url = '';
+			//const myId = '194260994@N06';
 
-		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
-		if (opt.type === 'search')
-			url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
-		if (opt.type === 'user')
-			url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
+			if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
+			if (opt.type === 'search')
+				url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
+			if (opt.type === 'user')
+				url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
 
-		const result = await axios.get(url);
-		if (result.data.photos.photo.length === 0) {
-			setLoader(false);
-			frame.current.classList.add('on');
-			const btnMine = btnSet.current.children;
-			btnMine[0].classList.add('on');
-			getFlickr({ type: 'interest' });
-			enableEvent.current = true;
-			return alert('이미지 결과값이 없습니다');
-		}
-		console.log(result.data.photos.photo);
-		setItems(result.data.photos.photo);
+			const result = await axios.get(url);
+			if (result.data.photos.photo.length === 0) {
+				setLoader(false);
+				frame.current.classList.add('on');
+				const btnMine = btnSet.current.children;
+				btnMine[0].classList.add('on');
+				getFlickr({ type: 'interest' });
+				enableEvent.current = true;
+				return alert('이미지 결과값이 없습니다');
+			}
+			console.log(result.data.photos.photo);
+			//외부 api로부터 데이터 패칭시간이 오래 걸리는 경우
+			//컴포넌트가 언 마운트시 해당 Mounted값을 false로 변경처리
+			//Mounted값이 true일때에만 fetching된 데이터를 state에 담음
+			Mounted && setItems(result.data.photos.photo);
 
-		//외부데이터가 State에 담기고 DOM이 생성되는 순간
-		//모든 img요소를 찾아서 반복처리
-		const imgs = frame.current.querySelectorAll('img');
+			//외부데이터가 State에 담기고 DOM이 생성되는 순간
+			//모든 img요소를 찾아서 반복처리
+			const imgs = frame.current.querySelectorAll('img');
 
-		imgs.forEach((img) => {
-			//이미지요소에 load이벤트가 발생할때 (소스이미지까지 로딩이 완료될떄마다)
-			img.onload = () => {
-				//내부적으로 카운터값을 1씩 증가
-				++counter;
+			imgs.forEach((img) => {
+				//이미지요소에 load이벤트가 발생할때 (소스이미지까지 로딩이 완료될떄마다)
+				img.onload = () => {
+					//내부적으로 카운터값을 1씩 증가
+					++counter;
 
-				//임시방편 - 전체 이미지 갯수가 하나 모잘라도 출력되게 수정
-				//문제점 - myGallery, interestGallery는 전체 이미지 카운트가 잘 되는데 특정 사용자 갤러리만 갯수가 1씩 모자라는 현상
-				if (counter === imgs.length - 2) {
-					//로더 제거하고 이미지 갤러리 보임처리
-					setLoader(false);
-					frame.current.classList.add('on');
-					//모션중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지를 시켜도
-					//모션이 끝나는순간에도 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리들어가서 오류가 발생가능
-					//해결방법 - 물리적으로 이벤트 호출을 지연시켜서 마지막에 발생한 이벤트만 동작처리 (debouncing)
-					//단시간에 많이 발생하는 이벤트시 함수 호출을 줄이는 방법
-					//debouncing: 이벤트 발생히 바로 호출하는게 아닌 일정시간 텀을 두고 마지막에 발생한 이벤트만 호출
-					//throttling: 이벤트 발생시 호출되는 함수자체를 적게 호출
+					//임시방편 - 전체 이미지 갯수가 하나 모잘라도 출력되게 수정
+					//문제점 - myGallery, interestGallery는 전체 이미지 카운트가 잘 되는데 특정 사용자 갤러리만 갯수가 1씩 모자라는 현상
+					if (counter === imgs.length - 2) {
+						//로더 제거하고 이미지 갤러리 보임처리
+						setLoader(false);
+						frame.current.classList.add('on');
+						//모션중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지를 시켜도
+						//모션이 끝나는순간에도 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리들어가서 오류가 발생가능
+						//해결방법 - 물리적으로 이벤트 호출을 지연시켜서 마지막에 발생한 이벤트만 동작처리 (debouncing)
+						//단시간에 많이 발생하는 이벤트시 함수 호출을 줄이는 방법
+						//debouncing: 이벤트 발생히 바로 호출하는게 아닌 일정시간 텀을 두고 마지막에 발생한 이벤트만 호출
+						//throttling: 이벤트 발생시 호출되는 함수자체를 적게 호출
 
-					enableEvent.current = true;
-				}
-			};
-		});
-	}, []);
+						enableEvent.current = true;
+					}
+				};
+			});
+		},
+		[Mounted]
+	);
 
 	//기존 갤러리 초기화 함수
 	const resetGallery = (e) => {
@@ -131,7 +148,13 @@ function Gallery() {
 	//미션2 - 아래 호출문으로 내 계정의 이미지 갤러리 호출되도록
 	//getFlickr({type: 'user', user: '내아이디'})
 	// useEffect(() => getFlickr({ type: 'user', user: '194260994@N06' }), []);
-	useEffect(() => getFlickr({ type: 'interest' }), [getFlickr]);
+	useEffect(() => {
+		getFlickr({ type: 'interest' });
+		return () => {
+			//컴포넌트 언마운트시 Mounted값을 false로 변경해서 state에 값이 담기는걸 방지
+			setMounted(false);
+		};
+	}, [getFlickr]);
 
 	return (
 		<>
