@@ -22,15 +22,14 @@
 
   <script>
     /*
-    Generator
-    promise, async, await 와 더불어서 ES6애서 새롭게 나온 동기화 문법
-    wapping함수 안쪽에 복수개의 함수를 순차적으로 원하는 시점에 동기적으로 호울하면서 여러개의 리턴값을 반환
-
-    사용순서
-    1. wrapping 함수 생성시 함수명 뒤에 * 추가
-    2. 안쪽에 자식함수 호울앞에 yield문 추가
-    3. 해당 wrapping 함수 호출시 리턴값으로 
-
+      Generator
+      promise, async await와 더불어서 ES6에서 새롭게 나온 동기화 문법
+      wrapping함수 안쪽에 복수개의 함수를 순차적으로 원하는 시점에 동기적으로 호출하면서 여러개의 리턴값을 반환
+      사용순서
+      1. wrapping함수 생성시 함수명 뒤에 * 추가
+      2. 안쪽에 자식함수 호출문앞에 yield문 추가
+      3. 해당 wrapping함수 호출시 리턴값으로 iterable객체반환 (반복가능한 객체)
+      4. 반환된 이터러블 객체에 .next메서드 호출시 원하는 시점에 동기적으로 함수 호출가능
     */
     function test1() {
       console.log('test1')
