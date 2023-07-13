@@ -16,9 +16,20 @@ import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
 import { useRef } from 'react';
+
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import * as types from './redux/actionType';
+
 //Menu 컴포넌트를 App새거 호출한 뒤 토글 객체를 각각 메이느 섭브 헤더로 전달해서 토글메뉴기능이 가능하도록
+
 function App() {
+	const dispatch = useDispatch();
 	const menu = useRef(null);
+
+	useEffect(() => {
+		dispatch({ type: types.YOUTUBE.start });
+	}, [dispatch]);
 
 	return (
 		<>

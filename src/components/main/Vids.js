@@ -1,6 +1,15 @@
 import { memo } from 'react';
-function vids() {
-	return <section id='vids' className='myScroll'></section>;
+import { useSelector } from 'react-redux';
+
+function Vids() {
+	const Vids = useSelector((store) => store.youtubeReducer.youtube);
+	console.log(Vids);
+
+	return (
+		<section id='vids' className='myScroll'>
+			Vids
+		</section>
+	);
 }
 
-export default memo(vids);
+export default memo(Vids);
