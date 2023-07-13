@@ -5,6 +5,11 @@ export const YOUTUBE = {
 	fail: 'YOUTUBE_FAIL',
 };
 
+export const DEPARTMENT = {
+	start: 'DEPARTMENT_START',
+	success: 'DEPARTMENT_SUCCESS',
+	fail: 'DEPARTMENT_FAIL',
+};
 /*
 	리덕스 사가 데이터 흐름 순서
 	1. actionType.js - 데이터요청, 성공, 실패에 대한 actionType을 세분화해서 객체형태로 export

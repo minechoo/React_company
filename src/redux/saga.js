@@ -15,7 +15,7 @@
   5- 위의 함수들을  saga단에서 단계에 맞게 동기화 호출할 수 있도록 제너레이터 함수로 제작
 */
 import { takeLatest, put, call, fork, all } from 'redux-saga/effects';
-import { fetchYoutube } from './api';
+import { fetchYoutube, fetchDepartment } from './api';
 import * as types from './actionType';
 
 //컴포넌트로부터 리듀서에 전달된 YOUTUBE_START 액션요청을 대신 전달받아 데이터 fetching함수 호출해주는 함수
@@ -35,7 +35,20 @@ function* returnYoutube() {
 	}
 }
 
+//department saga
+function* callDepartment() {
+	yield takeLatest(types.DEPARTMENT.start, returnDepartment);
+}
+function* returnDepartment() {
+	try {
+		const response = yield call(fetchDepartment);
+		yield put({ type: types.DEPARTMENT.success, payload: response.data.members });
+	} catch (err) {
+		yield put({ type: types.DEPARTMENT.fail, payload: err });
+	}
+}
+
 //최종적으로 fork를 통해 callYoutube호출 함수 제작
 export default function* rootSaga() {
-	yield all([fork(callYoutube)]);
+	yield all([fork(callYoutube), fork(callDepartment)]);
 }

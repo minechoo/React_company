@@ -10,6 +10,10 @@ export const fetchYoutube = async () => {
 	return await axios.get(url);
 };
 
+export const fetchDepartment = async () => {
+	return await axios.get(`${process.env.PUBLIC_URL}/DB/members.json`);
+};
+
 /*
   순수 함수 (Pure function)
   - 부수효과를 발생시키지 않는 순수 자바스크립트로만 동작 가능한 함수
