@@ -19,6 +19,46 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+
+  <script>
+    /*
+    Generator
+    promise, async, await 와 더불어서 ES6애서 새롭게 나온 동기화 문법
+    wapping함수 안쪽에 복수개의 함수를 순차적으로 원하는 시점에 동기적으로 호울하면서 여러개의 리턴값을 반환
+
+    사용순서
+    1. wrapping 함수 생성시 함수명 뒤에 * 추가
+    2. 안쪽에 자식함수 호울앞에 yield문 추가
+    3. 해당 wrapping 함수 호출시 리턴값으로 
+
+    */
+    function test1() {
+      console.log('test1')
+      return 'test1'
+    }
+    function test2() {
+      console.log('test2')
+      return 'test2'
+    }
+    function test3() {
+      console.log('test3')
+      return 'test3'
+    }
+
+    function* generator() {
+      yield test1()
+      yield test2()
+      yield test3()
+    }
+    const result = generator()
+    console.log(result)
+
+    const a = result.next()
+    const b = result.next()
+    const c = result.next()
+    const d = result.next()
+    console.log(d)
+  </script>
 </body>
 
 </html>
