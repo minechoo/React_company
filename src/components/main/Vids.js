@@ -1,6 +1,9 @@
 import { memo } from 'react';
-function vids() {
+import { useSelector } from 'react-redux';
+
+function Vids() {
+	useSelector((store) => console.log(store));
 	return <section id='vids' className='myScroll'></section>;
 }
 
-export default memo(vids);
+export default memo(Vids);
