@@ -21,9 +21,11 @@ function Gallery() {
 	const enableEvent = useRef(true);
 	const frame = useRef(null);
 	const counter = useRef(null);
+	const firstLoaded = useRef(true);
 
 	const [Loader, setLoader] = useState(true);
 	const [Index, setIndex] = useState(0);
+	//초기 opt 스테이트에 내 계정 정보등록 : 해당페이지 새로고침시 myGallery를 디폴트로 출력하기 위함
 	const [Opt, setOpt] = useState({ type: 'user', user: '194260994@N06' });
 	/*
 	const getFlickr = useCallback(async (opt) => {
@@ -33,6 +35,7 @@ function Gallery() {
 	}, []);
 */
 	//기존 갤러리 초기화 함수
+	//이벤트 발생시 각각 interest, mine, search, userGallery 호출될때마다 기존 사라지게 하고 로딩바 보이도록 하는 공통 초기화함수
 	const resetGallery = (e) => {
 		const btns = btnSet.current.querySelectorAll('button');
 		btns.forEach((el) => el.classList.remove('on'));
@@ -51,6 +54,7 @@ function Gallery() {
 		resetGallery(e);
 
 		//새로운 데이터로 갤러리 생성 함수 호출
+		//action 객체에 추가로 전달해야될
 		setOpt({ type: 'interest' });
 		isUser.current = false;
 	};
@@ -85,14 +89,17 @@ function Gallery() {
 	//getFlickr({type: 'user', user: '내아이디'})
 	//useEffect(() => getFlickr({ type: 'user', user: '194260994@N06' }), []);
 	// useEffect(() => getFlickr({ type: 'interest' }), [getFlickr]);
+	//액션에 우가로 전달되어야 할 Opt값이 변경될때마다 새롭게 액션객체를 생성해서 리듀서에 전달
 	useEffect(() => {
 		dispatch({ type: types.FLICKR.start, opt: Opt });
 	}, [Opt, dispatch]);
 
+	//전역 스테이트 정보값이 변경될때마다 해당구문 실행
+	//다시 이벤트 기능 활성화, 이미지로딩 이벤트 발생해서 이미지소스 출력 완료시 갤러리 보이게 처리, 버튼도 활성화
 	useEffect(() => {
 		console.log(Items);
 		counter.current = 0;
-		if (Items.length === 0) {
+		if (Items.length === 0 && !firstLoaded.current) {
 			setLoader(false);
 			frame.current.classList.add('on');
 			const btnMine = btnSet.current.children;
@@ -101,6 +108,7 @@ function Gallery() {
 			enableEvent.current = true;
 			return alert('이미지 결과값이 없습니다');
 		}
+		firstLoaded.current = false;
 		const imgs = frame.current.querySelectorAll('img');
 
 		imgs.forEach((img) => {
