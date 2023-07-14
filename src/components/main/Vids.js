@@ -7,7 +7,16 @@ function Vids() {
 
 	return (
 		<section id='vids' className='myScroll'>
-			Vids
+			<ul>
+				{Vids.map((vid, idx) => {
+					if (idx <= 4) return null;
+					return (
+						<li key={vid.id}>
+							<img src={vid.snippet.thumbnails.medium.url} alt={vid.snippet.title} />
+						</li>
+					);
+				})}
+			</ul>
 		</section>
 	);
 }
