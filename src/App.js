@@ -21,6 +21,7 @@ import { fetchYoutube } from './redux/youtubeSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchDepartment } from './redux/departmentSlice';
+import { fetchFlickr } from './redux/flickrSlice';
 
 //Menu 컴포넌트를 App새거 호출한 뒤 토글 객체를 각각 메이느 섭브 헤더로 전달해서 토글메뉴기능이 가능하도록
 
@@ -39,6 +40,7 @@ function App() {
 	useEffect(() => {
 		dispatch(fetchYoutube());
 		dispatch(fetchDepartment());
+		dispatch(fetchFlickr({ type: 'user', user: '194260994@N06' }));
 	}, [dispatch]);
 
 	return (

@@ -1,11 +1,14 @@
+import { useSelector } from 'react-redux';
+
 function Pics({ Scrolled, Pos }) {
-	const currentPos = Scrolled - Pos;
+	useSelector((store) => store.flickr.data);
+	//const currentPos = Scrolled - Pos;
 	// console.log(Scrolled);
-	const base = window.innerHeight / 2;
-	const modified = currentPos + base;
+	//const base = window.innerHeight / 2;
+	//const modified = currentPos + base;
 	return (
 		<section id='pics' className='myScroll'>
-			<h1 style={{ transform: `translateX(${currentPos}px)` }}>FLICKR</h1>
+			{/* <h1 style={{ transform: `translateX(${currentPos}px)` }}>FLICKR</h1>
 			<article
 				style={{
 					transform: `translate(-50%, -50%) rotate(${Scrolled >= Pos - base ? modified : 0}deg) scale(${
@@ -13,7 +16,7 @@ function Pics({ Scrolled, Pos }) {
 					}) `,
 					opacity: `${Scrolled >= Pos - base ? 1 - modified / 500 : 1}`,
 				}}
-			></article>
+			></article> */}
 		</section>
 	);
 }
