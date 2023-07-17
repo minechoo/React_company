@@ -29,7 +29,12 @@ function Vids() {
 								<div className='pic'>
 									<img src={vid.snippet.thumbnails.standard.url} alt={vid.snippet.title} />
 								</div>
-								<h2>{vid.snippet.title}</h2>
+								<h2>{vid.snippet.title.length >= 30 ? vid.snippet.title.substr(0, 30) + '...' : vid.snippet.title}</h2>
+								<p>
+									{vid.snippet.description.length >= 100
+										? vid.snippet.description.substr(0, 100) + '...'
+										: vid.snippet.description}
+								</p>
 							</div>
 						</SwiperSlide>
 					);
