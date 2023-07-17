@@ -14,6 +14,7 @@ export const fetchYoutube = createAsyncThunk('youtube/requestYoutube', async () 
 	return response.data.items;
 });
 
+//reducer 함수 대신
 const youtubeSlice = createSlice({
 	name: 'youtube',
 	initialState: {
@@ -24,10 +25,12 @@ const youtubeSlice = createSlice({
 		[fetchYoutube.pending]: (state) => {
 			state.isLoading = true;
 		},
+		//성공수행
 		[fetchYoutube.fulfilled]: (state, action) => {
 			state.isLoading = false;
 			state.data = action.payload;
 		},
+		//실패
 		[fetchYoutube.rejected]: (state, action) => {
 			state.isLoading = false;
 			state.data = action.payload;
