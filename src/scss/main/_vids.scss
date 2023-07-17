@@ -2,4 +2,34 @@
 	width: 100%;
 	height: 100vh;
 	background: hotpink;
+
+	.swiper {
+		height: 100%;
+		padding: 10vw 0;
+
+		.swiper-slide {
+			width: 100%;
+
+			.inner {
+				width: 100%;
+				height: 100%;
+				background: #fff;
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-content: center;
+
+				.pic {
+					width: 100%;
+					height: 40%;
+
+					img {
+						width: 100%;
+						height: 100%;
+						object-fit: cover;
+					}
+				}
+			}
+		}
+	}
 }
