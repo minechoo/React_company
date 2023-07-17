@@ -7,6 +7,29 @@
 		height: 100%;
 		padding: 12vw 0;
 
+		.controls {
+			position: absolute;
+			bottom: 50px;
+			left: 60px;
+			display: flex;
+			gap: 30px;
+			font-size: 24px;
+			color: #fff;
+			z-index: 5;
+
+			svg {
+				cursor: pointer;
+				opacity: 0.4;
+				transform: scale(1);
+				transition: opacity 0.5s, transform 0.5s;
+
+				&.on {
+					opacity: 1;
+					transform: scale(1.5);
+				}
+			}
+		}
+
 		.swiper-slide {
 			width: 100%;
 
@@ -46,6 +69,14 @@
 				opacity: 1;
 				transform: scale(1);
 			}
+		}
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	#vids {
+		.swiper {
+			padding: 12vw 50px;
 		}
 	}
 }

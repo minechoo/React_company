@@ -1,10 +1,41 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import 'swiper/css';
 import { Autoplay, Pagination, Navigation } from 'swiper';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import { useRef } from 'react';
+
+function BtnRolling() {
+	const btnStart = useRef(null);
+	const btnStop = useRef(null);
+	const swiper = useSwiper();
+	return (
+		<nav className='controls'>
+			<FontAwesomeIcon
+				icon={faPlay}
+				ref={btnStart}
+				onClick={(e) => {
+					swiper.autoplay.start();
+					btnStart.current.classList.add('on');
+					btnStop.current.classList.remove('on');
+				}}
+			/>
+			<FontAwesomeIcon
+				icon={faPause}
+				ref={btnStop}
+				onClick={(e) => {
+					swiper.autoplay.stop();
+					btnStop.current.classList.add('on');
+					btnStart.current.classList.remove('on');
+				}}
+			/>
+		</nav>
+	);
+}
 
 function Vids() {
 	const Vids = useSelector((store) => store.youtube.data);
@@ -13,13 +44,20 @@ function Vids() {
 			<Swiper
 				modules={[Autoplay, Pagination, Navigation]}
 				loop={true}
-				spaceBetween={50}
-				slidesPerView={3}
+				spaceBetween={30}
+				slidesPerView={1}
 				centeredSlides={true}
 				autoplay={{ delay: 2000, disableOnInteraction: true }}
 				pagination={{ clickable: true }}
 				navigation={true}
+				breakpoints={{
+					1200: {
+						slidesPerView: 3,
+						spaceBetween: 50,
+					},
+				}}
 			>
+				<BtnRolling />
 				{Vids.map((vid, idx) => {
 					if (idx >= 5) return null;
 
