@@ -20,6 +20,8 @@ import { useRef } from 'react';
 import { fetchYoutube } from './redux/youtubeSlice';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { fetchDepartment } from './redux/departmentSlice';
+
 //Menu 컴포넌트를 App새거 호출한 뒤 토글 객체를 각각 메이느 섭브 헤더로 전달해서 토글메뉴기능이 가능하도록
 
 /*
@@ -29,12 +31,14 @@ import { useDispatch } from 'react-redux';
 	3.app.js에서 slice파일로부터 action객체 생성함수를 import후 호출하여 action만들고 dispatch로 전달
 	4.원하는 컴포넌트에서 useSelector로 데이터 가져오기
 */
+
 function App() {
 	const menu = useRef(null);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(fetchYoutube());
+		dispatch(fetchDepartment());
 	}, [dispatch]);
 
 	return (
