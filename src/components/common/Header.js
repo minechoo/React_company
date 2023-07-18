@@ -4,8 +4,11 @@ import { Link, NavLink } from 'react-router-dom';
 //import Menu from './Menu';
 //import { useRef } from 'react';
 import { memo } from 'react';
+import { toggle } from '../../redux/menuSlice';
+import { useDispatch } from 'react-redux';
 
-function Header({ type, menu }) {
+function Header({ type }) {
+	const dispatch = useDispatch();
 	console.log('header');
 	// const active = { color: 'aqua' };
 	const active = 'on';
@@ -55,7 +58,8 @@ function Header({ type, menu }) {
 					icon={faBars}
 					onClick={() => {
 						// toggleMenu.current.toggle();
-						menu.current.toggle();
+						// menu.current.toggle();
+						dispatch(toggle());
 					}}
 				/>
 			</header>

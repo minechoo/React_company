@@ -19,31 +19,8 @@ function Gallery() {
 
 	const [Loader, setLoader] = useState(true);
 	const [Index, setIndex] = useState(0);
-	//새롭게 data fetching이 실행되면 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
-	//useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니라 직접 초기화해야됨
-	// let counter = 0;
-	// // counter.current = 0;
-	// const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
-	// const key = '86fbba2c96b5252a51879bc23af1f41e';
-	// const method_interest = 'flickr.interestingness.getList';
-	// const method_user = 'flickr.people.getPhotos';
-	// const method_search = 'flickr.photos.search';
-	// const num = 50;
-	// let url = '';
-	// //const myId = '194260994@N06';
-
-	// if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
-	// if (opt.type === 'search')
-	// 	url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
-	// if (opt.type === 'user')
-	// 	url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
-
-	// const result = await axios.get(url);
-
-	// }, []);
 
 	//기존 갤러리 초기화 함수
-
 	const resetGallery = (e) => {
 		const btns = btnSet.current.querySelectorAll('button');
 		btns.forEach((el) => el.classList.remove('on'));
