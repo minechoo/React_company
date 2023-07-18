@@ -123,7 +123,7 @@ function Member() {
 	}, [Val]);
 
 	return (
-		<Layout name={'Member'}>
+		<Layout name={'Member'} bg={`Members.jpg`}>
 			<button onClick={() => history.goBack()}>뒤로 가기</button>
 
 			<form onSubmit={handleSubmit}>

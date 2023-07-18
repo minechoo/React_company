@@ -96,7 +96,7 @@ function Gallery() {
 
 	return (
 		<>
-			<Layout name={'Gallery'}>
+			<Layout name={'Gallery'} bg={`Gallery.jpg`}>
 				<>
 					<div className='searchBox'>
 						<div className='search'>

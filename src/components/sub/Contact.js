@@ -107,7 +107,7 @@ function Contact() {
 	}, [Traffic, Location, kakao]);
 
 	return (
-		<Layout name={'Contact'}>
+		<Layout name={'Contact'} bg={`Location.jpg`}>
 			<div id='map' ref={container}></div>
 			<button onClick={() => setTraffic(!Traffic)}>{Traffic ? 'Traffic on' : 'Traffic off'}</button>
 			<ul className='branch'>

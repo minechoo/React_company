@@ -7,7 +7,7 @@ function Department() {
 	return (
 		// props으로 자식요소에 줄바꿈될 텍스트를 전달하고 싶을떄
 		//줄바꿀될 부분에 구분자가 될 문자값을 넣어서 전달
-		<Layout name={'Department'} txt={'Hello-World!'}>
+		<Layout name={'Department'} txt={'Hello-World!'} bg={`Department.jpg`}>
 			{Members.map((member, idx) => {
 				return (
 					<article key={idx}>

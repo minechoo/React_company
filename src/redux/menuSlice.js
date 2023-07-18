@@ -8,6 +8,7 @@ const menuSlice = createSlice({
 	//reudcers는 초기 state값을 변경해주는 함수를 직접 등록
 	reducers: {
 		close: (state) => {
+			//액션객체 반환
 			state.open = false;
 		},
 		toggle: (state) => {
