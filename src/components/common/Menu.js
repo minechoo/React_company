@@ -1,11 +1,3 @@
-/*
-redux-toolkit으로 client 
-{open : false} false면 메뉴제거 / true면 메뉴오픈
-menuSlice.js를 만들어서 위의 정보값을 초기 전역 state로 등록
-reducer에는 해당 전역 state값을 변경해주는 함수를 등록 (close, toggle)
-해당함수를 원하는 컴포넌트에서 자유롭게 호출해서 전역 state변경하도록
-*/
-
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
