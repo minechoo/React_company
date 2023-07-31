@@ -2,9 +2,9 @@ import { createContext, useContext, useState } from 'react';
 
 export const GlobalContext = createContext(null);
 
-export function GlobalProvider({ chidren }) {
+export function GlobalProvider({ children }) {
 	const [MenuOpen, setMenuOpen] = useState(false);
-	return <GlobalProvider.Provider value={(MenuOpen, setMenuOpen)}>{chidren}</GlobalProvider.Provider>;
+	return <GlobalContext.Provider value={{ MenuOpen, setMenuOpen }}>{children}</GlobalContext.Provider>;
 }
 
 export function useGlobalData() {
