@@ -1,7 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const fetchFlickr = createAsyncThunk('flickr/requestFlickr', async (opt) => {
+const fetchFlickr = async ({ queryKey }) => {
+	const opt = queryKey[1];
 	const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
 	const key = '86fbba2c96b5252a51879bc23af1f41e';
 	const method_interest = 'flickr.interestingness.getList';
@@ -17,30 +18,13 @@ export const fetchFlickr = createAsyncThunk('flickr/requestFlickr', async (opt) 
 
 	const response = await axios.get(url);
 	return response.data.photos.photo;
-});
+};
 
-//reducer 함수 대신
-const flickrSlice = createSlice({
-	name: 'flickr',
-	initialState: {
-		data: [],
-		isLoading: false,
-	},
-	extraReducers: {
-		[fetchFlickr.pending]: (state) => {
-			state.isLoading = true;
-		},
-		//성공수행
-		[fetchFlickr.fulfilled]: (state, action) => {
-			state.isLoading = false;
-			state.data = action.payload;
-		},
-		//실패
-		[fetchFlickr.rejected]: (state, action) => {
-			state.isLoading = false;
-			state.data = action.payload;
-		},
-	},
-});
-
-export default flickrSlice.reducer;
+export const useFlickrQuery = (opt) => {
+	return useQuery(['flickrData', opt], fetchFlickr, {
+		refetchOnMount: false,
+		refetchOnWindowFocus: false,
+		cacheTime: 1000 * 60,
+		staleTime: 1000 * 60,
+	});
+};
