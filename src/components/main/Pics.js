@@ -2,7 +2,7 @@ import { useFlickrQuery } from '../../hooks/useFlickerQuery';
 
 function Pics({ Scrolled, Pos }) {
 	const { data, isSuccess } = useFlickrQuery({ type: 'user', user: '194260994@N06' });
-	console.log(data);
+	// console.log(data);
 	//const currentPos = Scrolled - Pos;
 	// console.log(Scrolled);
 	//const base = window.innerHeight / 2;

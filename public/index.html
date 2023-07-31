@@ -80,7 +80,7 @@
         imgDOM.forEach(img => {
           img.onload = () => {
             counterImg++;
-            console.log('img loaded...', counterImg)
+            // console.log('img loaded...', counterImg)
 
             if (counterImg === lenImg) {
               res(true);
@@ -98,7 +98,7 @@
         vidDOM.forEach(vid => {
           vid.onloadeddata = () => {
             countVid++;
-            console.log('vid loaded..', countVid);
+            // console.log('vid loaded..', countVid);
 
             if (countVid === lenVid) {
               res(true);
@@ -112,7 +112,7 @@
     //promise.all : 인수로 전달받은 모든 promise가 완료되어야 동기화처리
     //promise.race : 인수로 전달받은 promise 중 하나라도 완료되는것이 바로 동기화처리
     Promise.all([loadImg(), loadVid()]).then(result => {
-      console.log(result)
+      // console.log(result)
       mask.classList.add('off')
       setTimeout(() => {
         mask.remove()

@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Anime from '../../asset/anime';
 import { memo } from 'react';
+import { useThrottle } from '../../hooks/useThrottle';
 
 function Btns({ setScrolled, setPos }) {
 	const btnRef = useRef(null);
@@ -16,11 +17,12 @@ function Btns({ setScrolled, setPos }) {
 	}, [setPos]);
 
 	const activation = useCallback(() => {
+		console.log('activation');
 		const base = -window.innerHeight / 2;
 		const scroll = window.scrollY;
 		const btns = btnRef.current.children;
 		const boxs = btnRef.current.parentElement.querySelectorAll('.myScroll');
-		setScrolled(scroll);
+		// setScrolled(scroll);
 
 		pos.current.forEach((pos, idx) => {
 			if (scroll >= pos + base) {
@@ -30,21 +32,31 @@ function Btns({ setScrolled, setPos }) {
 				boxs[idx].classList.add('on');
 			}
 		});
+	}, []);
+
+	const changeScroll = useCallback(() => {
+		const scroll = window.scrollY;
+		setScrolled(scroll);
 	}, [setScrolled]);
+
+	const getPos2 = useThrottle(getPos);
+	const activation2 = useThrottle(activation);
 
 	useEffect(() => {
 		getPos();
-		window.addEventListener('resize', getPos);
-		window.addEventListener('scroll', activation);
+		window.addEventListener('resize', getPos2);
+		window.addEventListener('scroll', activation2);
+		window.addEventListener('scroll', changeScroll);
 		//리액트는 SPA이기 때문에 페이지가 변경된다고 하더라도 스크롤 위치값이 초기화 되지 않으므로 마운트시마다 스크롤값을 초기화함
 		window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
 		return () => {
-			window.removeEventListener('resize', getPos);
-			window.removeEventListener('scroll', activation);
+			window.removeEventListener('resize', getPos2);
+			window.removeEventListener('scroll', activation2);
+			window.addEventListener('scroll', changeScroll);
 			window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 		};
-	}, [getPos, activation]);
+	}, [getPos2, activation2, changeScroll]);
 
 	/*
 		eslint가 의존성 배열에 activation, getPos함수를 등록하라고 권고문구를 띄우는 이유
