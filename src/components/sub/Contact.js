@@ -1,6 +1,7 @@
 import Layout from '../common/Layout';
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import emailjs from '@emailjs/browser';
+import { useThrottle } from '../../hooks/useThrottle';
 
 function Contact() {
 	const [Traffic, setTraffic] = useState(false);
@@ -74,6 +75,17 @@ function Contact() {
 		);
 	};
 	//email
+
+	const setCenter = useCallback(() => {
+		console.log('setCenter');
+		Location?.setCenter(info.current[Index].latlng);
+	}, [Index, Location]);
+
+	//커스텀훅은 다른 hook안쪽에서 호출이 불가능하므로
+	//useThrottle을 활용해야 되는 함수가 useEffect안쪽에 있다면
+	//밖으로 꺼내서 useThrottle적용한다음 또다른 useEffect안쪽에서 이벤트 연결
+	const setCenter2 = useThrottle(setCenter);
+
 	useEffect(() => {
 		container.current.innerHTML = '';
 		//인스턴스 호출구문은 컴포넌트 처음 마운트시 호출
@@ -84,19 +96,15 @@ function Contact() {
 		mapInstance.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
 		mapInstance.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 
-		//setCenter가 호출시 내부적으로 Index State 값에 의존하기때문에
-		//useEffect안쪽에서 setCenter함수를 정의하고 호출
-		const setCenter = () => {
-			mapInstance?.setCenter(info.current[Index].latlng);
-		};
-		//지역변수의 mapInstance값을 다른 함수에서도 활용해야 되므로 Location state에 해당 인스턴스 값 지정
-		window.addEventListener('resize', setCenter);
 		setLocation(mapInstance);
 
 		mapInstance.setZoomable(false);
-
-		return () => window.removeEventListener('resize', setCenter);
 	}, [Index, kakao, marker]);
+
+	useEffect(() => {
+		window.addEventListener('resize', setCenter2);
+		return () => window.removeEventListener('resize', setCenter2);
+	}, [setCenter2]);
 
 	useEffect(() => {
 		//Location state에 담겨있는 앱 인스턴스로부터 traffic레이어 호출구문처리
