@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Layout from '../common/Layout';
 import { useHistory } from 'react-router-dom';
+import { useDebounce } from '../../hooks/useDebounce';
 
 function Member() {
 	const selectEl = useRef(null);
@@ -22,16 +23,12 @@ function Member() {
 	const [Err, setErr] = useState({});
 	const [Submit, setSubmit] = useState(false);
 
+	const DebounceVal = useDebounce(Val);
+
 	const handleChange = (e) => {
 		//현재 입력하고 있는 input요소의 name,value값을 비구조화할당으로 뽑아서 출력
 		const { name, value } = e.target;
 		//기존 초기 Val State값을 deep copy해서 현재 입력하고 있는 항목의 name값과 value값으로 기존 State를 덮어쓰기 해서 변경 (불변성 유지)
-		setVal({ ...Val, [name]: value });
-	};
-
-	const handleRadio = (e) => {
-		const { name, value } = e.target;
-
 		setVal({ ...Val, [name]: value });
 	};
 
@@ -46,10 +43,10 @@ function Member() {
 		setVal({ ...Val, [name]: checkArr });
 	};
 
-	const handleSelect = (e) => {
-		const { name, value } = e.target;
-		setVal({ ...Val, [name]: value });
-	};
+	const showErr = useCallback(() => {
+		console.log('showErr');
+		setErr(check(DebounceVal));
+	}, [DebounceVal]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -97,15 +94,15 @@ function Member() {
 		return errs;
 	};
 
-	const resetForm = useCallback(() => {
-		const select = selectEl.current.options[0];
-		const checks = checkGroup.current.querySelectorAll('input');
-		const radios = radioGroup.current.querySelectorAll('input');
-		select.selected = true;
-		checks.forEach((el) => (el.checked = false));
-		radios.forEach((el) => (el.checked = false));
-		setVal(initVal);
-	}, []);
+	// const resetForm = useCallback(() => {
+	// 	const select = selectEl.current.options[0];
+	// 	const checks = checkGroup.current.querySelectorAll('input');
+	// 	const radios = radioGroup.current.querySelectorAll('input');
+	// 	select.selected = true;
+	// 	checks.forEach((el) => (el.checked = false));
+	// 	radios.forEach((el) => (el.checked = false));
+	// 	setVal(initVal);
+	// }, []);
 
 	useEffect(() => {
 		//객체의 키값을 배열로 반환한다음 해당 배열의 갯수를 저장
@@ -113,14 +110,14 @@ function Member() {
 		const len = Object.keys(Err).length;
 		if (len === 0 && Submit) {
 			alert('모든 인증을 통과했습니다.');
-			//history.push('/');
-			resetForm();
+			history.push('/');
+			//resetForm();
 		}
-	}, [Err, Submit, resetForm]);
+	}, [Err, Submit, history]);
 
 	useEffect(() => {
-		console.log(Val);
-	}, [Val]);
+		showErr();
+	}, [DebounceVal, showErr]);
 
 	return (
 		<Layout name={'Member'} bg={`Members.jpg`}>
@@ -213,10 +210,10 @@ function Member() {
 								<th>GENDER</th>
 								<td ref={radioGroup}>
 									<label htmlFor='male'>Male</label>
-									<input type='radio' name='gender' value='male' id='mail' onChange={handleRadio} />
+									<input type='radio' name='gender' value='male' id='mail' onChange={handleChange} />
 
 									<label htmlFor='female'>FeMale</label>
-									<input type='radio' name='gender' value='female' id='female' onChange={handleRadio} />
+									<input type='radio' name='gender' value='female' id='female' onChange={handleChange} />
 									<br />
 									{Err.gender && <p>{Err.gender}</p>}
 								</td>
@@ -245,7 +242,7 @@ function Member() {
 									<label htmlFor='edu'>EDUCATION</label>
 								</th>
 								<td>
-									<select name='edu' id='edu' onChange={handleSelect} ref={selectEl}>
+									<select name='edu' id='edu' onChange={handleChange} ref={selectEl}>
 										<option value=''>최종학력을 선택하세요</option>
 										<option value='elementary-school'>초등학교 졸업</option>
 										<option value='middle-school'>중학교 졸업</option>
