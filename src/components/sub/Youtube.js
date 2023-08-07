@@ -1,17 +1,23 @@
 import Layout from '../common/Layout';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Modal from '../common/Modal';
 import { useYoutubeQuery } from '../../hooks/useYoutubeQuery';
 
 function Youtube() {
 	const modal = useRef(null);
 	const [Index, setIndex] = useState(0);
+	const [Mounted, setMounted] = useState(true);
 	const { data: Vids, isSuccess } = useYoutubeQuery();
+
+	useEffect(() => {
+		return () => setMounted(false);
+	}, []);
 
 	return (
 		<>
 			<Layout name={'Youtube'} bg={`Youtube.jpg`}>
-				{isSuccess &&
+				{Mounted &&
+					isSuccess &&
 					Vids.map((vid, idx) => {
 						return (
 							<article key={idx}>
