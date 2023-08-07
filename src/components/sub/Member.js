@@ -45,6 +45,7 @@ function Member() {
 
 	const showErr = useCallback(() => {
 		console.log('showErr');
+		setSubmit(false);
 		setErr(check(DebounceVal));
 	}, [DebounceVal]);
 
